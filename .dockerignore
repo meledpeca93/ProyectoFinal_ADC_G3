@@ -1,0 +1,9 @@
+**
+!manage.py
+!requirements.txt
+!config/
+!cuentas/
+!juego/
+!estadisticas/
+!templates/
+!static/

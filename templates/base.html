@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Buscaminas{% endblock %}</title>
+  <style>
+    body { margin: 0; background: #091426; color: #edf6ff; font-family: system-ui, sans-serif; }
+    main { margin: 2rem auto; width: min(40rem, calc(100% - 2rem)); }
+    a { color: #67e8f9; }
+    :focus-visible { outline: 2px solid #67e8f9; outline-offset: 4px; }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <main>{% block content %}{% endblock %}</main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
