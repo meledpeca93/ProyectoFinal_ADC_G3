@@ -90,6 +90,8 @@ sequenceDiagram
 
 ### Persistencia y límites iniciales
 
+Para consultar PostgreSQL con DBeaver en el Mac, el archivo local `compose.override.yaml` publica `127.0.0.1:15432 → db:5432` y conecta `db` a una red bridge adicional para ese acceso. Compose carga el archivo automáticamente cuando se ejecuta desde la raíz sin especificar `-f`. El archivo está excluido de Git. En DBeaver se usa `127.0.0.1`, puerto `15432` y las credenciales de la base local. El despliegue usa `docker compose -f compose.yaml`, con PostgreSQL en su red interna.
+
 Los servicios `db`, `api` y `web` usan `restart: unless-stopped`. Docker vuelve a iniciar un contenedor si su proceso principal termina y respeta las detenciones manuales. Un estado `unhealthy` por sí solo se refleja en el healthcheck y no activa esta política.
 
 `buscaminas_g3_pgdata` guarda los datos de PostgreSQL. `docker compose down` retira los contenedores y las redes del proyecto. El siguiente `up` vuelve a montar el volumen. El volumen `buscaminas_g3_static` guarda archivos regenerables. Cambiar las credenciales en `.env` después de inicializar PostgreSQL requiere cambiar también las credenciales del rol en la base existente.
@@ -163,5 +165,15 @@ Al entrar a `/perfil/`, la música cambia a `Musica_opciones`. Se reproduce en b
 Cada pantalla identifica su pista al incluir `cuentas/musica_fondo.html`. La portada de acceso y registro usa `musica-login` en el mismo reproductor. El perfil usa `musica-opciones`. Para integrar el juego, el colaborador debe indicar la pista de la pantalla previa a la partida y cambiar a la pista de partida cuando el juego confirme su inicio. Si ambos estados viven en la misma página, se debe sustituir la fuente del reproductor existente para que solo suene una pista. Ambos estados deben aplicar el volumen y el silencio del perfil.
 
 La portada compacta los espacios en escritorios de menor altura y apila sus paneles en pantallas estrechas. El formulario de perfil guarda con el POST habitual de Django y actualiza las preferencias en la página sin reemplazar el reproductor. El volumen y el silencio guardados se aplican sobre la pista que está sonando.
+
+La portada mide la altura visible y ajusta la escala cuando el contenido supera ese espacio. Recalcula el ajuste al cambiar el tamaño de la ventana o alternar entre acceso y registro. En Chrome se verificaron ambos formularios sin desplazamiento horizontal ni vertical en nueve tamaños, desde 360 × 640 hasta 1648 × 928.
+
+En teléfonos, la portada oculta la bienvenida y Características, prioriza el formulario y coloca los niveles junto al pie. Los botones principales tienen texto más grande y una altura táctil de al menos 51 px en los tamaños de pantalla probados.
+
+La vista móvil también oculta el pie técnico y los textos repetidos. La marca conserva el enlace a Inicio y el encabezado mantiene el acceso a Mi perfil. Los niveles quedan al borde inferior. En Chrome, los botones de acceso y registro midieron 58 px de alto con texto de 20 px a 360 × 640, 375 × 667 y 390 × 844, sin desplazamiento.
+
+En teléfonos, la marca aparece una sola vez. La escena animada se centra encima del formulario y su paisaje se ensancha de forma independiente para cubrir el mismo ancho sin deformar la mina.
+
+El perfil móvil usa una cabecera compacta, muestra la identidad antes de los accesos de sección y da más espacio táctil al alias, a los controles de audio y a **Guardar perfil**. En escritorio se conserva la navegación lateral.
 
 Para el siguiente colaborador, Kenaliz puede leer las preferencias persistidas desde `request.user.perfil_jugador` una vez inicializado el perfil. Dimas puede conectar las estadísticas reales en `api/cuentas/templates/cuentas/perfil.html` cuando estén disponibles los modelos de partidas. La integración de las rutas privadas del juego y las respuestas 404 para partidas ajenas corresponde al motor. Cada colaborador debe registrar su verificación y dejar instrucciones para el siguiente relevo.

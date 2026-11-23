@@ -35,6 +35,7 @@ services:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Define DJANGO_SECRET_KEY en .env}
       DJANGO_DEBUG: ${DJANGO_DEBUG:-0}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-https://macbook-pro-ald-107.tail8b3390.ts.net}
     depends_on:
       db:
         condition: service_healthy

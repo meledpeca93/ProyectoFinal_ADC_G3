@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}Iniciar sesión · Buscaminas{% endblock %}
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'cuentas/portada.css' %}?v=viewport-4">
+<link rel="stylesheet" href="{% static 'cuentas/portada.css' %}?v=viewport-10">
 {% endblock %}
 {% block content %}
 <div class="portada">
@@ -10,7 +10,9 @@
   <div class="portada__contenido">
     <section class="portada__principal" aria-labelledby="titulo-portada">
       <div class="portada__hero">
-        {% include "cuentas/portada_mina.html" %}
+        <div class="portada__escena">
+          {% include "cuentas/portada_mina.html" %}
+        </div>
         {% include "cuentas/musica_fondo.html" with pista_opus="cuentas/audio/musica-login.ogg" pista_aac="cuentas/audio/musica-login.m4a" volumen=35 only %}
         <div class="portada__texto">
           <span class="portada__etiqueta"><span aria-hidden="true">◇</span> Juego educativo</span>

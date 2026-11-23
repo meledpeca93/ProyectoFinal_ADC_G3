@@ -246,3 +246,83 @@ main:has(> .cuentas) { width: 100%; margin: 0; }
   .perfil__volumen { grid-template-columns: auto minmax(9rem, 1fr) minmax(0, 1.4fr) auto; }
   .perfil__volumen label, .perfil__volumen input { grid-column: auto; }
 }
+
+@media (max-width: 47.99rem) {
+  .cuentas:has(.perfil) { min-height: 100dvh; }
+  .cuentas:has(.perfil) .cuentas__cabecera {
+    flex-wrap: nowrap;
+    gap: .5rem;
+    padding: .6rem .8rem;
+  }
+  .cuentas:has(.perfil) .cuentas__marca { gap: .5rem; min-width: 0; }
+  .cuentas:has(.perfil) .cuentas__marca strong { font-size: clamp(.95rem, 4vw, 1.12rem); }
+  .cuentas:has(.perfil) .cuentas__marca small,
+  .cuentas:has(.perfil) .cuentas__nav > a { display: none; }
+  .cuentas:has(.perfil) .cuentas__mina { flex-basis: 1.9rem; }
+  .cuentas:has(.perfil) .cuentas__nav { flex: 0 0 auto; }
+  .cuentas:has(.perfil) .cuentas__nav button {
+    min-height: 44px;
+    padding: .45rem .65rem;
+    border-color: var(--borde);
+    background: #14263a;
+    font-size: .8rem;
+  }
+
+  .perfil {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(35rem, calc(100% - 1.5rem));
+    gap: .65rem;
+    padding-block: .75rem max(1rem, env(safe-area-inset-bottom));
+  }
+  .perfil__contenido { display: contents; }
+  .perfil .cuentas__panel { padding: .85rem; border-radius: .9rem; }
+  .perfil__resumen { order: -1; gap: .75rem; }
+  .perfil__avatar { flex-basis: clamp(2.7rem, 12vw, 3.6rem); }
+  .perfil__identidad h1 { font-size: clamp(1.3rem, 5.5vw, 1.65rem); }
+  .perfil__identidad p { margin: .15rem 0 0; font-size: .81rem; line-height: 1.35; }
+  .perfil .perfil__nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .35rem;
+    padding: .3rem;
+    background: #0d1a2b;
+  }
+  .perfil__nav a[href="#mi-perfil"] { display: none; }
+  .perfil__nav a {
+    min-height: 44px;
+    justify-content: center;
+    gap: .3rem;
+    padding: .35rem .25rem;
+    font-size: .85rem;
+  }
+  .perfil__nav a[href="#preferencias"] { background: #14354b; border-color: #2f607d; }
+  .perfil__nav a:active { background: #1c4058; }
+
+  .perfil__preferencias h2 { margin-bottom: .65rem; }
+  .perfil .cuentas__form { gap: .65rem; }
+  .perfil input[type="text"] { min-height: 44px; margin-bottom: 0; }
+  .perfil fieldset { padding: .2rem .65rem .4rem; gap: 0; }
+  .perfil legend { font-size: .875rem; }
+  .perfil__volumen {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: .05rem .4rem;
+    padding: .3rem 0 .15rem;
+  }
+  .perfil__volumen + .perfil__volumen { border-top: 1px solid var(--borde); }
+  .perfil__volumen label { grid-column: 2; font-size: .85rem; }
+  .perfil__volumen input { grid-column: 1 / -1; grid-row: 2; min-height: 35px; }
+  .perfil__volumen output { grid-column: 3; grid-row: 1; min-width: 2.75rem; font-size: .8rem; }
+  .perfil__silencio { min-height: 44px; padding: .4rem 0 .15rem; }
+  .perfil__silencio label { font-size: .875rem; }
+  .perfil__silencio p { margin-top: .08rem; font-size: .76rem; }
+  .perfil__silencio input {
+    flex-basis: 3rem;
+    height: 2rem;
+    background: radial-gradient(circle at .9rem 50%, #ebf5ff .52rem, transparent .56rem), #263b52;
+  }
+  .perfil__silencio input:checked {
+    background: radial-gradient(circle at 2.05rem 50%, #eafaff .52rem, transparent .56rem), #0e627e;
+  }
+  .perfil .cuentas__primario { min-height: 50px; font-size: 1rem; }
+  .perfil__estadisticas p { font-size: .82rem; margin: .35rem 0 0; }
+}
