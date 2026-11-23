@@ -1,43 +1,37 @@
 # Arquitectura base del proyecto
 
 ## Servicios
-```text
-Navegador (PC/móvil)
-       | HTTPS 443
-       v
- proxy (Caddy o Nginx) -----> volumen static (solo lectura)
-       | red frontend
-       v
- web (Gunicorn + Django 5.2, puerto interno 8000)
-       | red backend interna
-       v
- db (PostgreSQL 16, 5432 interno; volumen pgdata)
-```
-`proxy` único con puertos públicos. `web` no publica 8000, `db` no publica 5432. La configuración y los secretos vienen de `.env` no versionado. Fijar nombre de proyecto Compose único para no interferir con sistemas Docker del usuario.
+
+El entorno local conecta el navegador en `127.0.0.1:8080` con Caddy (`web:8000`). Caddy reenvía las peticiones dinámicas a Gunicorn y Django en `api:5000` por la red frontend. Django comprueba su salud en su propio `127.0.0.1:8000` y consulta PostgreSQL en `db:5432` por la red backend interna. El despliegue Linux prevé HTTPS mediante el proxy en 80/443.
+
+`web` es el único servicio que publica un puerto. Los secretos vienen de `.env` local y Compose usa el nombre `buscaminas_g3`. El [registro de implementación](../Implementacion_realizadas.md) describe los healthchecks y los volúmenes.
 
 ## Módulos y propiedad del código
+
 ```text
 ProyectoFinal_ADC_G3/
-├── AGENTS.md
-├── config/               # settings/urls/wsgi
-├── cuentas/              # Auth, PerfilJugador (Nelsi)
-├── juego/                # Partida, Movimiento y motor (Emerson)
-│   ├── services/          # minas.py, reglas.py
-│   └── templates/juego/   # Inicio, tablero, resultado, niveles
-├── estadisticas/         # consultas historial / ranking (Dimas)
-├── templates/base.html   # Milton (después de base inicial del integrador)
-├── static/css/            # estilos globales y específicos
-├── static/js/             # tablero (Ismael), audio (Kenaliz)
-├── static/audio/          # recursos con licencia
-├── docs/                  # especificaciones y evidencias
-├── Dockerfile
+├── api/
+│   ├── Dockerfile
+│   ├── manage.py
+│   ├── requirements.txt
+│   ├── config/               # settings, rutas y WSGI
+│   ├── cuentas/              # Auth y PerfilJugador (Nelsi)
+│   ├── juego/                # Partida, Movimiento y motor (Emerson)
+│   ├── estadisticas/         # Historial y ranking (Dimas)
+│   ├── templates/base.html   # Milton
+│   └── static/               # CSS, JS del tablero (Ismael), audio (Kenaliz)
+├── web/
+│   ├── Dockerfile
+│   └── Caddyfile
+├── db/
+│   └── init.sql
+├── docs/
 ├── compose.yaml
-├── Caddyfile
-├── requirements.txt
 ├── .env.example
 └── README.md
 ```
-La estructura es propuesta inicial: no crear migraciones incompatibles, ni duplicar servicios estadísticos, ni redefinir endpoints sin acordarlo.
+
+Los modelos y contratos se acuerdan por PR con los responsables de cada módulo.
 
 ## Modelos mínimos
 - `User` Django: username único, email, password hash.

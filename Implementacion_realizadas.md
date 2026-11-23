@@ -63,7 +63,7 @@ Estos valores son un presupuesto inicial de 2.5 CPU y 1 GiB de RAM para los cont
 
 ### Verificación de esta entrega
 
-`docker compose config --quiet` aceptó la configuración con valores de prueba. `manage.py check` y las dos pruebas HTTP de salud sin base activa pasaron con Python 3.13 local. La imagen declara Python 3.12. El daemon de Docker estaba apagado durante la revisión. Quedan pendientes el arranque del stack, la prueba de salud con PostgreSQL real y la comprobación de persistencia tras `down` y `up`.
+`docker compose config --quiet` aceptó la configuración. En el proyecto aislado `buscaminas_g3_verificacion` se construyeron las dos imágenes y arrancaron los tres servicios. La página inicial y `/salud/` respondieron por Caddy, PostgreSQL registró `TimeZone=UTC` y las tres pruebas Django pasaron con Python 3.12 y PostgreSQL 16. Tras `down` y `up`, PostgreSQL conservó su identificador de clúster y `/salud/` volvió a responder. Al terminar se retiraron los contenedores y las redes de verificación, conservando los volúmenes.
 
 ### Relevo al siguiente colaborador
 
