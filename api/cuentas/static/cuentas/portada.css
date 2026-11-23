@@ -93,11 +93,66 @@ main:has(> .portada) { width: 100%; margin: 0; }
   aspect-ratio: 1.10;
   top: 7%;
   right: 0;
-  background: var(--referencia) 100% 0 / 100% auto no-repeat;
-  background-size: 366% auto;
-  background-position: 58.2% 29.5%;
+  pointer-events: none;
   mask-image: linear-gradient(90deg, transparent, #000 15%), linear-gradient(0deg, transparent, #000 23%, #000 87%, transparent);
   mask-composite: intersect;
+}
+/* La mina y la luz comparten el centro del aro en el viewBox original. */
+.portada__arte {
+  --mina-ciclo-flotacion: 4s;
+  --mina-ciclo-luz: 3.6s;
+  --mina-altura: clamp(8px, .75vw, 12px);
+  --mina-intensidad: 1;
+}
+.portada__control-mina {
+  position: absolute;
+  z-index: 1;
+  top: .65rem;
+  right: .75rem;
+  min-height: 32px;
+  padding: .3rem .6rem;
+  color: #bbdcf3;
+  background: #091829;
+  border: 1px solid #3b607d;
+  border-radius: .5rem;
+  font: 650 .75rem system-ui, sans-serif;
+  cursor: pointer;
+}
+.portada__control-mina:hover { color: #f5f8ff; border-color: var(--cian); }
+.mina__flotante, .mina__luz {
+  transform-box: view-box;
+  transform-origin: 907px 315px;
+}
+.mina__flotante { animation: mina-flotar var(--mina-ciclo-flotacion) ease-in-out infinite; }
+.mina__luz {
+  opacity: var(--mina-intensidad);
+  filter: drop-shadow(0 0 7px #ffb800);
+  animation: mina-recorrer-borde var(--mina-ciclo-luz) linear infinite;
+}
+.mina__salientes use {
+  opacity: .12;
+  animation: mina-iluminar-saliente var(--mina-ciclo-luz) ease-out infinite;
+  animation-delay: calc(var(--mina-ciclo-luz) * (var(--paso) / 8 - 1));
+}
+@keyframes mina-flotar {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(calc(-1 * var(--mina-altura))) rotate(2deg); }
+}
+@keyframes mina-recorrer-borde {
+  to { transform: rotate(1turn); }
+}
+@keyframes mina-iluminar-saliente {
+  0% { opacity: .62; }
+  15%, 95% { opacity: .12; }
+  100% { opacity: .62; }
+}
+.portada__arte[data-movimiento="pausa"] :is(.mina__flotante, .mina__luz, .mina__salientes use) {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .portada__arte:not([data-movimiento="activo"]) :is(.mina__flotante, .mina__luz, .mina__salientes use) {
+    animation-play-state: paused;
+  }
 }
 .portada__texto { max-width: min(60%, 36rem); }
 .portada__etiqueta {
@@ -336,6 +391,7 @@ main:has(> .portada) { width: 100%; margin: 0; }
   .portada__hero { padding-inline: .85rem; }
   .portada__texto { max-width: none; }
   .portada__arte { width: 33%; top: 0; opacity: .55; }
+  .portada__control-mina { top: .3rem; right: .35rem; }
   .portada h1 { font-size: clamp(1.8rem, 8vw, 2.65rem); }
   .portada__form { grid-template-columns: 1fr; }
   .portada__niveles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; margin-inline: .55rem; }

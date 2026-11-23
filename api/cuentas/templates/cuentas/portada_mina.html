@@ -1,0 +1,76 @@
+{% load static %}
+<svg class="portada__arte" viewBox="707 155 457 415" aria-hidden="true" focusable="false">
+  <defs>
+    <image id="mina-referencia" href="{% static 'cuentas/referencia-inicio.png' %}" width="1672" height="941"/>
+
+    <path id="mina-n" d="M891 217 895 202Q896 192 907 193Q920 192 922 202L925 218Z"/>
+    <path id="mina-ne" d="M966 240 989 224Q998 219 1006 228Q1014 235 1008 244L987 264Z"/>
+    <path id="mina-e" d="M1000 298 1021 303Q1032 303 1032 315Q1032 330 1022 331L1000 334Z"/>
+    <path id="mina-se" d="M985 367 1006 386Q1012 394 1005 402Q996 411 989 406L969 388Z"/>
+    <path id="mina-s" d="M889 405 922 404 919 427Q917 436 907 436Q896 437 894 427Z"/>
+    <path id="mina-so" d="M846 385 828 407Q822 412 814 403Q808 396 816 385L831 365Z"/>
+    <path id="mina-o" d="M814 297 794 301Q784 302 784 315Q782 329 794 332L814 335Z"/>
+    <path id="mina-no" d="M833 264 815 243Q809 235 817 226Q825 218 834 224L852 239Z"/>
+
+    <clipPath id="mina-silueta">
+      <circle cx="907" cy="315" r="99"/>
+      <use href="#mina-n"/>
+      <use href="#mina-ne"/>
+      <use href="#mina-e"/>
+      <use href="#mina-se"/>
+      <use href="#mina-s"/>
+      <use href="#mina-so"/>
+      <use href="#mina-o"/>
+      <use href="#mina-no"/>
+    </clipPath>
+
+    <radialGradient id="mina-hueco" gradientUnits="userSpaceOnUse" cx="908" cy="315" r="150">
+      <stop offset=".85" stop-color="#000"/>
+      <stop offset="1" stop-color="#fff"/>
+    </radialGradient>
+    <mask id="mina-fondo" maskUnits="userSpaceOnUse" x="707" y="155" width="457" height="415">
+      <rect x="707" y="155" width="457" height="415" fill="url(#mina-hueco)"/>
+    </mask>
+    <radialGradient id="mina-cielo" cx="75%" cy="48%" r="80%">
+      <stop stop-color="#15547a"/>
+      <stop offset=".57" stop-color="#102f49"/>
+      <stop offset="1" stop-color="#0b1e30"/>
+    </radialGradient>
+    <radialGradient id="mina-ambiente">
+      <stop stop-color="#ffb800" stop-opacity=".26"/>
+      <stop offset=".68" stop-color="#ffb800" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#ffb800" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mina-dorado" x2="1" y2="1">
+      <stop stop-color="#fff3b0"/>
+      <stop offset=".45" stop-color="#ffd54a"/>
+      <stop offset="1" stop-color="#ffb800"/>
+    </linearGradient>
+  </defs>
+
+  <g class="mina__paisaje">
+    <rect x="707" y="155" width="457" height="415" fill="url(#mina-cielo)"/>
+    <path d="M707 407 756 379 857 432 947 385 1058 343 1164 295V570H707Z" fill="#0d2c46"/>
+    <path d="M707 480 757 451 867 482 943 460 1003 469 1116 383 1164 402V570H707Z" fill="#133c57"/>
+    <use href="#mina-referencia" mask="url(#mina-fondo)"/>
+  </g>
+  <ellipse class="mina__ambiente" cx="908" cy="320" rx="155" ry="154" fill="url(#mina-ambiente)"/>
+  <g class="mina__flotante">
+    <use href="#mina-referencia" clip-path="url(#mina-silueta)"/>
+    <g class="mina__salientes" fill="url(#mina-dorado)">
+      <use href="#mina-n" style="--paso: 0"/>
+      <use href="#mina-ne" style="--paso: 1"/>
+      <use href="#mina-e" style="--paso: 2"/>
+      <use href="#mina-se" style="--paso: 3"/>
+      <use href="#mina-s" style="--paso: 4"/>
+      <use href="#mina-so" style="--paso: 5"/>
+      <use href="#mina-o" style="--paso: 6"/>
+      <use href="#mina-no" style="--paso: 7"/>
+    </g>
+    <g class="mina__luz" fill="none" stroke-linecap="round">
+      <path d="M846 243A94 94 0 0 1 907 220" stroke="#ffb800" stroke-width="9" opacity=".62"/>
+      <path d="M874 226A94 94 0 0 1 907 220" stroke="#ffd54a" stroke-width="6"/>
+      <path d="M889 222A94 94 0 0 1 907 220" stroke="#fff3b0" stroke-width="3"/>
+    </g>
+  </g>
+</svg>

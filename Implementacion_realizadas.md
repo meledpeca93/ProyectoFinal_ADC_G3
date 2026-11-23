@@ -150,4 +150,8 @@ La portada de acceso y el registro comparten `api/cuentas/templates/cuentas/port
 
 El inicio de sesión apila sus campos. En ambos formularios, la acción principal ocupa todo el ancho y el acceso alternativo aparece como enlace de texto. El registro muestra errores por campo y conserva la validación de Django.
 
+La ilustración de la portada se compone por capas en `api/cuentas/templates/cuentas/portada_mina.html`. El SVG recorta la mina de la imagen original y completa la pequeña zona del paisaje que queda visible al desplazarla. En `portada.css`, `--mina-ciclo-flotacion`, `--mina-ciclo-luz`, `--mina-altura` y `--mina-intensidad` controlan el efecto. Chrome confirmó el recorrido horario, los destellos secuenciales, el paisaje fijo y el movimiento reducido a 1648, 390 y 360 px.
+
+En la primera visita, la mina respeta la preferencia de movimiento reducido. Los controles **Animar mina** y **Pausar mina** guardan la elección en el navegador para conservarla al recargar o volver a abrir la página.
+
 Para el siguiente colaborador, Kenaliz puede leer las preferencias persistidas desde `request.user.perfil_jugador` una vez inicializado el perfil. Dimas puede conectar las estadísticas reales en `api/cuentas/templates/cuentas/perfil.html` cuando estén disponibles los modelos de partidas. La integración de las rutas privadas del juego y las respuestas 404 para partidas ajenas corresponde al motor. Cada colaborador debe registrar su verificación y dejar instrucciones para el siguiente relevo.

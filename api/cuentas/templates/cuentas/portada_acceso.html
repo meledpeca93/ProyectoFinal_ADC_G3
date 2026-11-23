@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}Iniciar sesión · Buscaminas{% endblock %}
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'cuentas/portada.css' %}">
+<link rel="stylesheet" href="{% static 'cuentas/portada.css' %}?v=mina-2">
 {% endblock %}
 {% block content %}
 <div class="portada">
@@ -10,7 +10,8 @@
   <div class="portada__contenido">
     <section class="portada__principal" aria-labelledby="titulo-portada">
       <div class="portada__hero">
-        <div class="portada__arte" aria-hidden="true"></div>
+        {% include "cuentas/portada_mina.html" %}
+        <button class="portada__control-mina" type="button" data-control-mina hidden></button>
         <div class="portada__texto">
           <span class="portada__etiqueta"><span aria-hidden="true">◇</span> Juego educativo</span>
           <h1 id="titulo-portada">BUSCAMINAS</h1>
@@ -73,5 +74,5 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="{% static 'cuentas/acceso.js' %}" defer></script>
+<script src="{% static 'cuentas/acceso.js' %}?v=mina-3" defer></script>
 {% endblock %}
