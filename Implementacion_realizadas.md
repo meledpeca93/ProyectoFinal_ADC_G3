@@ -2,7 +2,9 @@
 
 ## v0.1.0 · Base de Melvin Edgardo Peña Caballero
 
-La rama `feature/08-melvin-infraestructura` contiene el esqueleto compartido. `config` centraliza los ajustes, las rutas y WSGI. `cuentas`, `juego` y `estadisticas` están disponibles para sus responsables. La página inicial y la plantilla `base.html` son provisionales y usan la paleta Dark Neon de las maquetas.
+La rama `feature/08-melvin-infraestructura` contiene el esqueleto compartido. `api/config` centraliza los ajustes, las rutas y WSGI. Las aplicaciones `cuentas`, `juego` y `estadisticas` viven en `api/` junto a las plantillas y los estáticos. La página inicial y la plantilla `base.html` son provisionales y usan la paleta Dark Neon de las maquetas.
+
+Compose construye Django desde `api/Dockerfile` y Caddy desde `web/Dockerfile`, que incorpora `web/Caddyfile` en la imagen. PostgreSQL usa su imagen oficial y monta `db/init.sql` en modo de solo lectura.
 
 ### Servicios y comunicación
 
@@ -33,6 +35,7 @@ sequenceDiagram
     participant DB as db · PostgreSQL
     participant API as api · Django
     participant WEB as web · Caddy
+    DB->>DB: Si PGDATA está vacío, inicializar y ejecutar init.sql
     DB->>DB: pg_isready por TCP en 5432
     DB-->>API: Compose espera service_healthy
     API->>DB: Aplicar migraciones
@@ -43,6 +46,8 @@ sequenceDiagram
 ```
 
 `pg_isready` comprueba si PostgreSQL acepta conexiones. `/salud/` verifica además que Django puede ejecutar una consulta con sus credenciales. Si la consulta falla, responde HTTP 503. `depends_on` ordena el arranque inicial. Si PostgreSQL deja de responder después, Caddy puede seguir en ejecución y `/salud/` reflejará el fallo.
+
+`db/init.sql` establece UTC como zona horaria predeterminada de la base del proyecto. La imagen oficial lo ejecuta únicamente al inicializar un volumen vacío. Las tablas de Django se crean con migraciones y los volúmenes existentes conservan su configuración.
 
 ### Persistencia y límites iniciales
 
@@ -62,7 +67,7 @@ Estos valores son un presupuesto inicial de 2.5 CPU y 1 GiB de RAM para los cont
 
 ### Relevo al siguiente colaborador
 
-Milton puede comenzar en `templates/base.html` y `templates/inicio_provisional.html` para implementar el layout y el inicio a partir de `docs/diseno/01_inicio.png`. Mantener los puntos de extensión de la plantilla o coordinar sus cambios por PR. Antes de trabajar en paralelo en el motor y el tablero, Emerson e Ismael deben cerrar el contrato del DTO y las respuestas de acciones repetidas.
+Milton puede comenzar en `api/templates/base.html` y `api/templates/inicio_provisional.html` para implementar el layout y el inicio a partir de `docs/diseno/01_inicio.png`. Mantener los puntos de extensión de la plantilla o coordinar sus cambios por PR. Antes de trabajar en paralelo en el motor y el tablero, Emerson e Ismael deben cerrar el contrato del DTO y las respuestas de acciones repetidas.
 
 Cada integrante debe añadir una entrada a este archivo en su PR. Incluir nombre, cambios por módulo, rutas, modelos o flujos afectados, verificación ejecutada, pendientes y una indicación concreta de dónde debe empezar el próximo colaborador. Dejar ese relevo actualizado en cada entrega.
 

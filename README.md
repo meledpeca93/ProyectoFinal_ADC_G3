@@ -2,6 +2,10 @@
 
 Base v0.1.0 de Arquitectura de Computadoras. El entorno local usa Docker Engine, Docker Compose v2 y un único archivo `compose.yaml`.
 
+- `api/` contiene el Dockerfile, el proyecto Django, sus aplicaciones, plantillas y archivos estáticos.
+- `web/` contiene el Dockerfile y la configuración de Caddy.
+- `db/` contiene el SQL de inicialización de PostgreSQL.
+
 ## Arranque local
 
 1. Copia `.env.example` a `.env`. Completa `POSTGRES_PASSWORD` y `DJANGO_SECRET_KEY` con valores distintos y aleatorios. Puedes generar cada uno con `openssl rand -hex 32`.
