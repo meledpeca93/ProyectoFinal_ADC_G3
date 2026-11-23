@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %}Mi perfil · Buscaminas{% endblock %}
 {% block panel_cuentas %}
+{% include "cuentas/musica_fondo.html" with pista_opus="cuentas/audio/musica-opciones.ogg" pista_aac="cuentas/audio/musica-opciones.m4a" volumen=preferencias.volumen_musica silenciado=preferencias.silenciado only %}
 <div class="perfil">
   <nav class="cuentas__panel perfil__nav" aria-label="Secciones del perfil">
     <a href="#mi-perfil"><span aria-hidden="true">◎</span> Mi perfil</a>

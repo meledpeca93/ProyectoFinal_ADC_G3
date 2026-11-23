@@ -108,7 +108,11 @@ class SesionPerfilTests(TestCase):
         self.assertTrue(perfil.silenciado)
         self.otro.refresh_from_db()
         self.assertEqual(self.otro.alias, "Privado")
-        self.assertContains(self.client.get(url), "Neón")
+        perfil_html = self.client.get(url)
+        self.assertContains(perfil_html, "Neón")
+        self.assertContains(perfil_html, "musica-opciones.ogg")
+        self.assertContains(perfil_html, 'data-volumen-musica="0"')
+        self.assertContains(perfil_html, 'data-silenciado="true"')
 
     def test_rechaza_volumenes_fuera_de_rango(self):
         self.client.force_login(self.usuario)

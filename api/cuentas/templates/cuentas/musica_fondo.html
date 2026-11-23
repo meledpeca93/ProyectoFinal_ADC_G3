@@ -1,0 +1,8 @@
+{% load static %}
+<audio data-musica-fondo data-volumen-musica="{{ volumen }}"
+       data-silenciado="{{ silenciado|yesno:'true,false,false' }}"
+       loop preload="{% if silenciado or not volumen %}none{% else %}auto{% endif %}">
+  <source src="{% static pista_opus %}" type='audio/ogg; codecs="opus"'>
+  <source src="{% static pista_aac %}" type="audio/mp4">
+</audio>
+<script src="{% static 'cuentas/musica.js' %}" defer></script>

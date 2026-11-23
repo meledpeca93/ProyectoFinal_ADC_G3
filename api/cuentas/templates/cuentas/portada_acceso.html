@@ -11,10 +11,7 @@
     <section class="portada__principal" aria-labelledby="titulo-portada">
       <div class="portada__hero">
         {% include "cuentas/portada_mina.html" %}
-        <audio data-musica-login loop preload="auto">
-          <source src="{% static 'cuentas/audio/musica-login.ogg' %}" type='audio/ogg; codecs="opus"'>
-          <source src="{% static 'cuentas/audio/musica-login.m4a' %}" type="audio/mp4">
-        </audio>
+        {% include "cuentas/musica_fondo.html" with pista_opus="cuentas/audio/musica-login.ogg" pista_aac="cuentas/audio/musica-login.m4a" volumen=35 only %}
         <div class="portada__texto">
           <span class="portada__etiqueta"><span aria-hidden="true">◇</span> Juego educativo</span>
           <h1 id="titulo-portada">BUSCAMINAS</h1>
@@ -77,5 +74,5 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="{% static 'cuentas/acceso.js' %}?v=musica-5" defer></script>
+<script src="{% static 'cuentas/acceso.js' %}?v=musica-6" defer></script>
 {% endblock %}

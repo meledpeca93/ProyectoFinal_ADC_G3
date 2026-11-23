@@ -67,29 +67,3 @@ if (mina) {
     // Sin almacenamiento local se usa la preferencia de movimiento del sistema.
   }
 }
-
-const musicaLogin = document.querySelector("[data-musica-login]");
-
-if (musicaLogin) {
-  musicaLogin.volume = .35;
-  const gestos = new AbortController();
-  let iniciandoMusica = false;
-
-  async function iniciarMusica() {
-    if (iniciandoMusica) return;
-    iniciandoMusica = true;
-    try {
-      await musicaLogin.play();
-      gestos.abort();
-    } catch {
-      // Si el navegador bloquea este intento, prueba con el siguiente gesto.
-    } finally {
-      iniciandoMusica = false;
-    }
-  }
-
-  const opciones = { capture: true, signal: gestos.signal };
-  document.addEventListener("click", iniciarMusica, opciones);
-  document.addEventListener("keydown", iniciarMusica, opciones);
-  iniciarMusica();
-}
