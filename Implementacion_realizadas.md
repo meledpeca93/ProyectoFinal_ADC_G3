@@ -90,6 +90,8 @@ sequenceDiagram
 
 ### Persistencia y límites iniciales
 
+Los servicios `db`, `api` y `web` usan `restart: unless-stopped`. Docker vuelve a iniciar un contenedor si su proceso principal termina y respeta las detenciones manuales. Un estado `unhealthy` por sí solo se refleja en el healthcheck y no activa esta política.
+
 `buscaminas_g3_pgdata` guarda los datos de PostgreSQL. `docker compose down` retira los contenedores y las redes del proyecto. El siguiente `up` vuelve a montar el volumen. El volumen `buscaminas_g3_static` guarda archivos regenerables. Cambiar las credenciales en `.env` después de inicializar PostgreSQL requiere cambiar también las credenciales del rol en la base existente.
 
 | Servicio | CPU | RAM | PID | Motivo |

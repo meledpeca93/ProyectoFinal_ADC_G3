@@ -3,6 +3,7 @@ name: buscaminas_g3
 services:
   db:
     image: postgres:16
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-buscaminas}
       POSTGRES_USER: ${POSTGRES_USER:-buscaminas}
@@ -23,6 +24,7 @@ services:
     pids_limit: 100
 
   api:
+    restart: unless-stopped
     build:
       context: ./api
       dockerfile: Dockerfile
@@ -61,6 +63,7 @@ services:
     pids_limit: 64
 
   web:
+    restart: unless-stopped
     build:
       context: ./web
       dockerfile: Dockerfile
