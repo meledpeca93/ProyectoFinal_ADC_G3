@@ -35,8 +35,10 @@ def perfil(request):
         request.POST if request.method == "POST" else None,
         instance=preferencias,
     )
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        messages.success(request, "Tus preferencias se guardaron.")
-        return redirect("perfil")
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Tus preferencias se guardaron.")
+            return redirect("perfil")
+        preferencias.refresh_from_db()
     return render(request, "cuentas/perfil.html", {"form": form, "preferencias": preferencias})

@@ -1,12 +1,11 @@
 const musica = document.querySelector("[data-musica-fondo]");
 
-if (musica && musica.dataset.silenciado !== "true" && Number(musica.dataset.volumenMusica) > 0) {
-  musica.volume = Number(musica.dataset.volumenMusica) / 100;
+if (musica) {
   const gestos = new AbortController();
   let iniciandoMusica = false;
 
   async function iniciarMusica() {
-    if (iniciandoMusica) return;
+    if (iniciandoMusica || musica.muted || !musica.paused) return;
     iniciandoMusica = true;
     try {
       await musica.play();
@@ -18,8 +17,15 @@ if (musica && musica.dataset.silenciado !== "true" && Number(musica.dataset.volu
     }
   }
 
+  function aplicarPreferenciasMusica() {
+    musica.volume = Number(musica.dataset.volumenMusica) / 100;
+    musica.muted = musica.dataset.silenciado === "true" || musica.volume === 0;
+    iniciarMusica();
+  }
+
   const opciones = { capture: true, signal: gestos.signal };
   document.addEventListener("click", iniciarMusica, opciones);
   document.addEventListener("keydown", iniciarMusica, opciones);
-  iniciarMusica();
+  musica.addEventListener("preferencias-musica", aplicarPreferenciasMusica);
+  aplicarPreferenciasMusica();
 }

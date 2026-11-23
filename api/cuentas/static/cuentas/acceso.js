@@ -1,6 +1,19 @@
 const selectorFormulario = "[data-formulario-acceso]";
+const portada = document.querySelector(".portada");
 let formularioActual = document.querySelector(selectorFormulario);
 let solicitudFormulario;
+
+function ajustarPortada() {
+  portada.style.removeProperty("--escala-portada");
+  const altoDisponible = window.innerHeight;
+  let escala = 1;
+  for (let intento = 0; intento < 3; intento += 1) {
+    const altoContenido = Math.ceil(portada.getBoundingClientRect().height);
+    if (altoContenido <= altoDisponible) break;
+    escala *= (altoDisponible - 1) / altoContenido;
+    portada.style.setProperty("--escala-portada", escala);
+  }
+}
 
 function prepararFormulario(formulario) {
   for (const boton of formulario.querySelectorAll("[data-ver-contrasena]")) {
@@ -34,6 +47,7 @@ async function cambiarFormulario(url, agregarAlHistorial) {
     formularioActual.replaceWith(formulario);
     formularioActual = formulario;
     document.title = pagina.title;
+    ajustarPortada();
     formulario.querySelector("h2").focus({ preventScroll: true });
   } catch {
     if (!solicitud.signal.aborted) location.href = url;
@@ -42,6 +56,8 @@ async function cambiarFormulario(url, agregarAlHistorial) {
 
 if (formularioActual) {
   prepararFormulario(formularioActual);
+  ajustarPortada();
+  window.addEventListener("resize", ajustarPortada);
 
   document.addEventListener("click", (evento) => {
     const enlace = evento.target.closest("[data-cambiar-formulario]");

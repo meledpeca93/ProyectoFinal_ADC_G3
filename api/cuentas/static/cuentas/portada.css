@@ -10,10 +10,15 @@ main:has(> .portada) { width: 100%; margin: 0; }
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh;
+  zoom: var(--escala-portada, 1);
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
   background: radial-gradient(ellipse at 50% 25%, #0c1b2b, var(--fondo) 75%);
   color: var(--texto);
 }
 .portada *, .portada *::before, .portada *::after { box-sizing: border-box; }
+.portada[style] { min-height: calc((100dvh - 1px) / var(--escala-portada, 1)); }
 .portada h1, .portada h2, .portada p { margin: 0; }
 .portada__cabecera {
   min-height: 88px;
@@ -365,7 +370,7 @@ main:has(> .portada) { width: 100%; margin: 0; }
 @media (max-width: 54rem) {
   .portada__cabecera { gap: .75rem; flex-wrap: wrap; }
   .portada__nav { max-width: none; flex-basis: 100%; padding-left: 0; border: 0; flex-wrap: wrap; }
-  .portada__contenido { grid-template-columns: 1fr; }
+  .portada__contenido { grid-template-columns: minmax(0, 1fr); }
   .portada__caracteristicas ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1rem; }
 }
 @media (max-width: 37rem) {
@@ -382,5 +387,95 @@ main:has(> .portada) { width: 100%; margin: 0; }
   .portada__niveles > div:first-child { grid-column: 1 / -1; margin-bottom: .3rem; }
   .portada__nivel > span { display: none; }
   .portada__nivel small { padding-inline: .3rem; font-size: .73rem; }
-  .portada__caracteristicas ul { display: block; }
+}
+
+@media (min-width: 54.01rem) and (max-height: 60rem) {
+  .portada__cabecera { min-height: 76px; }
+  .portada__logo { flex-basis: clamp(2.5rem, 4vw, 4rem); }
+  .portada__contenido { padding-block: .9rem 1.05rem; }
+  .portada__hero { padding-block: 1rem; }
+  .portada__bienvenida { margin-block: .8rem; }
+  .portada__form { padding: .85rem; gap: .65rem .9rem; }
+  .portada__form input:not([type="hidden"]) { min-height: 42px; }
+  .portada__acciones .portada__entrar { min-height: 48px; }
+  .portada__niveles { padding-block: .8rem; }
+  .portada__nivel { padding-block: .7rem; }
+  .portada__caracteristicas li { padding-block: .45rem; }
+  .portada__icono { width: min(100%, 3.6rem); }
+  .portada__pie { padding-block: .85rem; }
+}
+
+@media (min-width: 54.01rem) and (max-height: 50rem) {
+  .portada__cabecera { min-height: 64px; }
+  .portada__logo { flex-basis: 3rem; }
+  .portada__marca strong { font-size: clamp(1.35rem, 2.3vw, 2.1rem); }
+  .portada__contenido { gap: .8rem; padding-block: .65rem; }
+  .portada__hero { padding-block: .7rem; }
+  .portada__etiqueta { padding-block: .18rem; font-size: .85rem; }
+  .portada h1 { margin-top: .45rem; font-size: clamp(2rem, 3.3vw, 3.5rem); }
+  .portada__subtitulo { font-size: clamp(.95rem, 1.4vw, 1.4rem); }
+  .portada__bienvenida { margin-block: .5rem; }
+  .portada__bienvenida strong { font-size: 1.15rem; }
+  .portada__bienvenida p { font-size: .94rem; }
+  .portada__form { gap: .45rem .7rem; padding: .6rem .75rem; }
+  .portada__form-cabecera { gap: .5rem; }
+  .portada__seguridad { scale: .85; }
+  .portada__campo label { margin-bottom: .25rem; }
+  .portada__form input:not([type="hidden"]), .portada__acciones .portada__entrar { min-height: 40px; }
+  .portada__niveles { margin-bottom: .6rem; padding: .6rem; }
+  .portada__nivel { padding-block: .5rem; }
+  .portada__caracteristicas h2 { padding-block: .6rem; }
+  .portada__caracteristicas li { grid-template-columns: 2.75rem minmax(0, 1fr); padding-block: .35rem; }
+  .portada__pie { padding-block: .6rem; }
+}
+
+@media (max-width: 54rem) {
+  .portada__cabecera { min-height: 0; row-gap: .25rem; padding-block: .4rem; }
+  .portada__logo { flex-basis: 2rem; }
+  .portada__marca { gap: .55rem; }
+  .portada__marca strong { font-size: 1.18rem; }
+  .portada__marca small { margin-top: .05rem; font-size: .7rem; }
+  .portada__nav { justify-content: flex-start; gap: .35rem; }
+  .portada__nav > *, .portada__nav .portada__nav-inicio { padding-block: .3rem; }
+  .portada__contenido { gap: .3rem; padding-block: .35rem; }
+  .portada__hero { padding-block: .5rem; }
+  .portada__etiqueta { padding: .15rem .55rem; font-size: .72rem; }
+  .portada h1 { margin-top: .35rem; }
+  .portada__subtitulo { margin-top: .23rem !important; font-size: .83rem; }
+  .portada__bienvenida { margin-block: .35rem; padding-left: .55rem; }
+  .portada__bienvenida strong { font-size: .94rem; }
+  .portada__bienvenida p { font-size: .75rem; margin-top: .05rem; }
+  .portada__form { gap: .4rem .55rem; padding: .45rem .65rem; }
+  .portada__form h2 { font-size: 1rem; }
+  .portada__form-cabecera { gap: .4rem; }
+  .portada__seguridad { width: 1.65rem; height: 1.65rem; }
+  .portada__seguridad::before { top: .24rem; }
+  .portada__seguridad::after { top: .62rem; }
+  .portada__campo label { margin-bottom: .15rem; font-size: .8rem; }
+  .portada__form input:not([type="hidden"]) { min-height: 36px; padding-block: .3rem; font-size: 1rem; }
+  .portada__contrasena button { top: .16rem; bottom: .16rem; }
+  .portada__acciones { margin-top: .05rem; gap: .18rem; }
+  .portada__acciones .portada__entrar { min-height: 38px; padding-block: .35rem; font-size: .96rem; }
+  .portada__acciones p { font-size: .78rem; }
+  .portada__acciones a { padding-block: .2rem; }
+  .portada__niveles { gap: .35rem; margin-bottom: .45rem; padding: .4rem; }
+  .portada__niveles h2 { font-size: .9rem; }
+  .portada__niveles > div:first-child { margin: 0; }
+  .portada__niveles > div:first-child p { margin-top: .08rem; font-size: .74rem; }
+  .portada__nivel { padding: .25rem .15rem; border-radius: .55rem; }
+  .portada__nivel strong { font-size: .83rem; }
+  .portada__nivel p { font-size: .73rem; margin-top: .05rem; }
+  .portada__nivel small { margin-top: .1rem; padding: .08rem .3rem; font-size: .68rem; }
+  .portada__caracteristicas h2 { padding: .28rem .55rem; font-size: .98rem; }
+  .portada__caracteristicas ul { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .22rem .35rem; padding: .3rem .5rem; }
+  .portada__caracteristicas li {
+    grid-template-columns: 1.25rem minmax(0, 1fr);
+    align-items: start;
+    gap: .2rem;
+    padding: .08rem 0;
+    border: 0;
+  }
+  .portada__caracteristicas strong { display: block; font-size: .75rem; line-height: 1.12; }
+  .portada__caracteristicas p { margin-top: .08rem; font-size: .69rem; line-height: 1.15; overflow-wrap: anywhere; }
+  .portada__pie { justify-content: center; gap: .1rem .55rem; padding: .3rem .5rem; text-align: center; font-size: .68rem; }
 }
