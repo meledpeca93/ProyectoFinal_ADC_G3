@@ -1,0 +1,8 @@
+{% extends "cuentas/portada_acceso.html" %}
+{% block title %}Iniciar sesión · Buscaminas{% endblock %}
+{% block clase_formulario %}portada__form--login{% endblock %}
+{% block titulo_formulario %}Iniciar sesión{% endblock %}
+{% block acciones_formulario %}
+<button type="submit" class="portada__entrar"><span aria-hidden="true">⇥</span> Entrar</button>
+<p>¿Aún no tienes cuenta? <a href="{% url 'cuentas:registro' %}">Regístrate</a></p>
+{% endblock %}

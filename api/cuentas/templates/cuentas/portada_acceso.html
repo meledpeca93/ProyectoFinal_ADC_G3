@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Iniciar sesión · Buscaminas{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'cuentas/portada.css' %}">
+{% endblock %}
+{% block content %}
+<div class="portada">
+  {% include "cuentas/portada_cabecera.html" %}
+  <div class="portada__contenido">
+    <section class="portada__principal" aria-labelledby="titulo-portada">
+      <div class="portada__hero">
+        <div class="portada__arte" aria-hidden="true"></div>
+        <div class="portada__texto">
+          <span class="portada__etiqueta"><span aria-hidden="true">◇</span> Juego educativo</span>
+          <h1 id="titulo-portada">BUSCAMINAS</h1>
+          <p class="portada__subtitulo">Proyecto 3 · Arquitectura de Computadoras</p>
+          <div class="portada__bienvenida">
+            <strong>¡Bienvenido a Buscaminas!</strong>
+            <p>Pon a prueba tu lógica y estrategia, despeja las casillas seguras y evita las minas.</p>
+          </div>
+
+          <form class="portada__form {% block clase_formulario %}{% endblock %}" method="post" aria-labelledby="titulo-acceso">
+            {% csrf_token %}
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+            <div class="portada__form-cabecera">
+              <span class="portada__seguridad" aria-hidden="true"></span>
+              <h2 id="titulo-acceso">{% block titulo_formulario %}{% endblock %}</h2>
+            </div>
+            {{ form.non_field_errors }}
+            {% for campo in form.visible_fields %}
+              <div class="portada__campo">
+                {{ campo.label_tag }}
+                {% if campo.widget_type == "password" %}
+                  <div class="portada__contrasena">
+                    {{ campo }}
+                    <button type="button" data-ver-contrasena hidden aria-controls="{{ campo.id_for_label }}">Mostrar</button>
+                  </div>
+                {% else %}
+                  {{ campo }}
+                {% endif %}
+                {{ campo.errors }}
+              </div>
+            {% endfor %}
+            <div class="portada__acciones">
+              {% block acciones_formulario %}{% endblock %}
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <section class="portada__niveles" aria-labelledby="titulo-niveles">
+        <div><h2 id="titulo-niveles"><span aria-hidden="true">▦</span> Niveles de dificultad</h2><p>Elige el reto que mejor se adapte a ti.</p></div>
+        <div class="portada__nivel"><span aria-hidden="true">▦</span><div><strong>Fácil</strong><p>8 × 8</p><small>10 minas</small></div></div>
+        <div class="portada__nivel portada__nivel--normal"><span aria-hidden="true">▦</span><div><strong>Normal</strong><p>10 × 10</p><small>18 minas</small></div></div>
+        <div class="portada__nivel"><span aria-hidden="true">▦</span><div><strong>Difícil</strong><p>12 × 12</p><small>30 minas</small></div></div>
+      </section>
+    </section>
+
+    <aside class="portada__caracteristicas" aria-labelledby="titulo-caracteristicas">
+      <h2 id="titulo-caracteristicas"><span aria-hidden="true">⚙︎</span> Características</h2>
+      <ul>
+        <li><span class="portada__icono" aria-hidden="true">▣</span><div><strong>Juego web</strong><p>Juega desde tu navegador, sin instalaciones.</p></div></li>
+        <li><span class="portada__icono portada__icono--oro" aria-hidden="true">♜</span><div><strong>Puntajes</strong><p>Compite y consigue tus mejores tiempos.</p></div></li>
+        <li><span class="portada__icono" aria-hidden="true">▥</span><div><strong>Historial</strong><p>Consulta tus partidas y tu progreso.</p></div></li>
+        <li><span class="portada__icono" aria-hidden="true">◎</span><div><strong>Perfil</strong><p>Personaliza tu alias y tus preferencias.</p></div></li>
+        <li><span class="portada__icono" aria-hidden="true">▤</span><div><strong>Responsive</strong><p>Juega en computadora, tableta o celular.</p></div></li>
+        <li><span class="portada__icono" aria-hidden="true">♫</span><div><strong>Audio</strong><p>Ajusta la música y los efectos por separado.</p></div></li>
+      </ul>
+    </aside>
+  </div>
+  {% include "cuentas/portada_pie.html" %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'cuentas/acceso.js' %}" defer></script>
+{% endblock %}

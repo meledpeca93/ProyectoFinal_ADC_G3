@@ -1,0 +1,57 @@
+{% extends "cuentas/base.html" %}
+{% load static %}
+{% block title %}Mi perfil · Buscaminas{% endblock %}
+{% block panel_cuentas %}
+<div class="perfil">
+  <nav class="cuentas__panel perfil__nav" aria-label="Secciones del perfil">
+    <a href="#mi-perfil"><span aria-hidden="true">◎</span> Mi perfil</a>
+    <a href="#preferencias"><span aria-hidden="true">♫</span> Preferencias</a>
+    <a href="#estadisticas"><span aria-hidden="true">▥</span> Estadísticas</a>
+  </nav>
+
+  <div class="perfil__contenido">
+    <header id="mi-perfil" class="cuentas__panel perfil__resumen">
+      <span class="cuentas__icono cuentas__icono--usuario perfil__avatar" aria-hidden="true"></span>
+      <div class="perfil__identidad">
+        <h1>{{ preferencias.alias|default:request.user.username }}</h1>
+        {% if request.user.email %}<p>{{ request.user.email }}</p>{% endif %}
+        <p>Miembro desde el {{ request.user.date_joined|date:"j \d\e F \d\e Y" }}</p>
+      </div>
+    </header>
+
+    <section id="preferencias" class="cuentas__panel perfil__preferencias" aria-labelledby="titulo-preferencias">
+      <h2 id="titulo-preferencias"><span aria-hidden="true">⚙</span> Preferencias</h2>
+      {% for message in messages %}<p class="cuentas__mensaje" role="status">{{ message }}</p>{% endfor %}
+      <form method="post" class="cuentas__form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div>{{ form.alias.as_field_group }}</div>
+        <fieldset>
+          <legend>Preferencias de audio</legend>
+          {% include "cuentas/volumen.html" with campo=form.volumen_musica icono="♫" %}
+          {% include "cuentas/volumen.html" with campo=form.volumen_efectos icono="◖" %}
+          <div class="perfil__silencio">
+            <div>
+              {{ form.silenciado.label_tag }}
+              <p>Desactiva la música y los efectos del juego.</p>
+              {{ form.silenciado.errors }}
+            </div>
+            {{ form.silenciado }}
+          </div>
+        </fieldset>
+        <button class="cuentas__primario" type="submit">Guardar perfil</button>
+      </form>
+    </section>
+
+    <section id="estadisticas" class="cuentas__panel perfil__estadisticas" aria-labelledby="titulo-estadisticas">
+      <h2 id="titulo-estadisticas"><span aria-hidden="true">▥</span> Estadísticas personales</h2>
+      {% block estadisticas_perfil %}
+        <p>Las estadísticas estarán disponibles cuando se integre el registro de partidas.</p>
+      {% endblock %}
+    </section>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'cuentas/volumen.js' %}" defer></script>
+{% endblock %}

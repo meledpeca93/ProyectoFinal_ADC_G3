@@ -42,12 +42,51 @@ sequenceDiagram
     API->>API: Recopilar estáticos e iniciar Gunicorn
     API->>DB: GET /salud/ ejecuta SELECT 1
     API-->>WEB: Compose espera service_healthy
+    WEB->>API: Healthcheck de Caddy consulta GET /salud/
     WEB->>API: Reenviar peticiones por el puerto 5000
 ```
 
-`pg_isready` comprueba si PostgreSQL acepta conexiones. `/salud/` verifica además que Django puede ejecutar una consulta con sus credenciales. Si la consulta falla, responde HTTP 503. `depends_on` ordena el arranque inicial. Si PostgreSQL deja de responder después, Caddy puede seguir en ejecución y `/salud/` reflejará el fallo.
+`pg_isready` comprueba si PostgreSQL acepta conexiones. `/salud/` verifica además que Django puede ejecutar una consulta con sus credenciales. Si la consulta falla, responde HTTP 503. `depends_on` ordena el arranque inicial. El healthcheck propio de `web` consulta `http://127.0.0.1:8000/salud/` desde el contenedor de Caddy. Compose muestra `healthy` cuando responde la cadena Caddy → Django → PostgreSQL y `unhealthy` después de tres comprobaciones fallidas consecutivas fuera del período de arranque.
 
 `db/init.sql` establece UTC como zona horaria predeterminada de la base del proyecto. La imagen oficial lo ejecuta únicamente al inicializar un volumen vacío. Las tablas de Django se crean con migraciones y los volúmenes existentes conservan su configuración.
+
+### Cómo levantar los servicios en local
+
+1. Inicia Docker y abre una terminal en la raíz del repositorio, donde está `compose.yaml`. Comprueba que el motor y Compose estén disponibles.
+
+   ```sh
+   docker info --format '{{.ServerVersion}}'
+   docker compose version
+   ```
+
+2. Crea `.env` a partir de `.env.example` si aún no tienes uno.
+
+   ```sh
+   test -f .env || cp .env.example .env
+   ```
+
+   Edita `.env` y completa `POSTGRES_PASSWORD` y `DJANGO_SECRET_KEY` con valores distintos y aleatorios. Puedes ejecutar `openssl rand -hex 32` una vez para cada valor. Si PostgreSQL ya tiene un volumen inicializado, usa las credenciales vigentes. Si el puerto local 8080 está ocupado, cambia `WEB_PORT` y usa ese puerto en las URL.
+
+3. Valida la configuración, construye las imágenes de `api` y `web` y levanta el proyecto.
+
+   ```sh
+   docker compose config --quiet
+   docker compose up -d --build
+   docker compose ps
+   ```
+
+   Compose espera a que `db` esté saludable antes de iniciar `api` y a que `api` esté saludable antes de iniciar `web`. Django aplica las migraciones y ejecuta `collectstatic` durante su arranque.
+
+4. Verifica la aplicación a través de Caddy y ejecuta las pruebas.
+
+   ```sh
+   curl -fsS http://127.0.0.1:8080/salud/
+   docker compose exec api python manage.py test
+   ```
+
+   La comprobación de salud debe devolver `{"estado": "ok"}`. Abre <http://127.0.0.1:8080/salud/> en el navegador para ver el panel de estado y <http://127.0.0.1:8080/> para ver la página inicial. Si algún servicio falla, consulta el estado con `docker compose ps -a` y los registros con `docker compose logs --tail=100 db api web`.
+
+5. Para detener el entorno al terminar, ejecuta `docker compose down` desde la misma carpeta. El siguiente `docker compose up -d --build` reutilizará el volumen de PostgreSQL.
 
 ### Persistencia y límites iniciales
 
@@ -71,6 +110,42 @@ Milton puede comenzar en `api/templates/base.html` y `api/templates/inicio_provi
 
 Cada integrante debe añadir una entrada a este archivo en su PR. Incluir nombre, cambios por módulo, rutas, modelos o flujos afectados, verificación ejecutada, pendientes y una indicación concreta de dónde debe empezar el próximo colaborador. Dejar ese relevo actualizado en cada entrega.
 
+### Vista de salud para el navegador
+
+`/salud/` negocia el formato con la cabecera `Accept`. Cuando el cliente prefiere HTML, Django sirve `api/templates/salud.html` con un indicador verde de servicio operativo o uno rojo de servicio no disponible, el estado de PostgreSQL y un enlace para actualizar la comprobación. Docker y `curl` reciben el JSON habitual. Ambas representaciones conservan los códigos HTTP 200 y 503 y se sirven sin caché.
+
+El panel muestra iconos y estados por servicio. `web` se verifica cuando la petición pasa por Caddy, que añade la cabecera interna `X-Buscaminas-Proxy`. `api` se verifica cuando Django genera la página y `db` cuando responde a `SELECT 1`. Si PostgreSQL falla, la página conserva el HTTP 503 y marca la fila de la base como `Unhealthy`. Las filas describen lo observado durante la petición. El healthcheck de Docker para `web` y `api` incluye la dependencia de PostgreSQL.
+
+Cada fila muestra los puertos de escucha de su servicio. Caddy escucha en 8000 y el panel muestra además el host y puerto usados en la petición, normalmente `127.0.0.1:8080`. Django escucha en 5000 para Caddy y en 8000 dentro de su contenedor para el healthcheck. PostgreSQL escucha en 5432 por la red interna.
+
 ### Bitácora de IA
 
 - Codex asistió en el esqueleto Django, la configuración de Compose y proxy, las pruebas de salud y esta documentación.
+
+## Módulo de cuentas y perfil
+
+Trabajo realizado en la rama personal `feature/08-melvin-infraestructura`. La distribución de integrantes se consulta en `docs/DISTRIBUCION_EQUIPO.md`.
+
+| Ruta | Método | Comportamiento |
+|---|---|---|
+| `/` | GET, POST | Portada de acceso con inicio de sesión activo y pestaña de registro. Si hay una sesión iniciada, abre el perfil. |
+| `/cuentas/registro/` | GET, POST | Valida usuario único, formato de correo y contraseña con los validadores de Django. Crea el usuario y su perfil en una transacción e inicia sesión. |
+| `/cuentas/login/` | GET, POST | Autentica con usuario y contraseña. Después de iniciar sesión vuelve a la ruta local solicitada o abre el perfil. |
+| `/cuentas/logout/` | POST | Cierra la sesión con protección CSRF y redirige a la pantalla de acceso. |
+| `/perfil/` | GET, POST | Muestra el perfil del usuario autenticado y guarda alias, volúmenes de 0 a 100 y silencio. |
+
+La migración `cuentas.0001_initial` crea `PerfilJugador` con una relación uno a uno al usuario de Django. Los perfiles de usuarios existentes se inicializan al abrir su perfil por primera vez. Compose aplica la migración al reconstruir e iniciar `api`.
+
+Para probar el flujo, abre `/cuentas/registro/`, crea una cuenta, guarda las preferencias, cierra sesión y vuelve a entrar. Ejecuta `docker compose exec api python manage.py test cuentas` para verificar registro, sesión, CSRF, privacidad del perfil y persistencia.
+
+En un proyecto Compose aislado pasaron las 14 pruebas de Django con PostgreSQL 16. La comprobación de migraciones quedó limpia y Caddy sirvió el formulario de registro y su hoja de estilos.
+
+Las pantallas de acceso y perfil siguen las maquetas `02_acceso_usuarios.png` y `06_perfil.png`. Acceso y registro comparten cabecera, panel y pestañas. El perfil incorpora navegación por secciones, avatar, fecha de registro y controles de audio deslizantes con indicador de porcentaje. Los estilos y el script de volumen pertenecen a `api/cuentas/static/cuentas/`.
+
+La revisión de la portada usa `01_inicio.png` como referencia para `/` y `/cuentas/login/`. Integra el formulario Django en el panel de bienvenida y conserva la ilustración, los niveles, las características y el pie. El formulario admite nombre de usuario o correo asociado a una sola cuenta y permite alternar la visibilidad de la contraseña. En Chrome se comparó la vista de 1648 × 928 con la referencia y se verificó el ancho del documento a 390 y 360 px. Pasaron 16 pruebas de Django.
+
+La portada de acceso y el registro comparten `api/cuentas/templates/cuentas/portada_acceso.html` y `portada.css`. Cada ruta renderiza sus campos Django y sus acciones. Se verificaron ambas pantallas a 1648, 390 y 360 px, incluido el control de visibilidad de cada contraseña.
+
+El inicio de sesión apila sus campos. En ambos formularios, la acción principal ocupa todo el ancho y el acceso alternativo aparece como enlace de texto. El registro muestra errores por campo y conserva la validación de Django.
+
+Para el siguiente colaborador, Kenaliz puede leer las preferencias persistidas desde `request.user.perfil_jugador` una vez inicializado el perfil. Dimas puede conectar las estadísticas reales en `api/cuentas/templates/cuentas/perfil.html` cuando estén disponibles los modelos de partidas. La integración de las rutas privadas del juego y las respuestas 404 para partidas ajenas corresponde al motor. Cada colaborador debe registrar su verificación y dejar instrucciones para el siguiente relevo.

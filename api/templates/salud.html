@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block title %}Estado del servicio · Buscaminas{% endblock %}
+
+{% block extra_head %}
+<style>
+  body {
+    background: radial-gradient(ellipse at 50% 12%, #173652 0%, #091426 58%);
+    min-height: 100vh;
+  }
+  main { margin: 0 auto; padding: clamp(2rem, 8vh, 5rem) 0 2rem; }
+  .salud {
+    --estado: #73f2be;
+    --fondo-estado: #13352e;
+    padding: clamp(1.25rem, 5vw, 2.5rem);
+    background: #101f34;
+    border: 1px solid #34516b;
+    border-radius: 1.5rem;
+    text-align: center;
+    box-shadow: 0 1.5rem 4rem #03091280;
+  }
+  .salud--error { --estado: #ffb4be; --fondo-estado: #432431; }
+  .salud h1 { color: #bdd0e0; font-size: 1rem; font-weight: 600; margin: 0 0 1.5rem; }
+  .salud__icono {
+    display: grid;
+    place-items: center;
+    width: 5rem;
+    height: 5rem;
+    margin: 0 auto 1rem;
+    border: 2px solid var(--estado);
+    border-radius: 50%;
+    background: var(--fondo-estado);
+    color: var(--estado);
+    font: 700 3rem/1 system-ui, sans-serif;
+  }
+  .salud__estado {
+    color: var(--estado);
+    font-size: clamp(2rem, 7vw, 3.5rem);
+    line-height: 1.1;
+    margin: 0;
+  }
+  .salud__detalle { color: #d2e1ef; line-height: 1.6; margin: 0.85rem 0 1.5rem; }
+  .servicios { display: grid; gap: 0.625rem; margin: 0 0 1rem; padding: 0; list-style: none; }
+  .servicio {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: clamp(0.5rem, 2vw, 1rem);
+    background: #10253b;
+    border: 1px solid #2d4b65;
+    border-radius: 0.875rem;
+    padding: clamp(0.625rem, 2vw, 0.875rem);
+    text-align: left;
+  }
+  .servicio__icono {
+    display: grid;
+    place-items: center;
+    width: clamp(2rem, 7vw, 2.75rem);
+    aspect-ratio: 1;
+    border-radius: 0.625rem;
+    background: #193750;
+    color: #8fe9ff;
+    font-weight: 700;
+  }
+  .servicio__icono::before {
+    content: "";
+    display: block;
+    width: 1rem;
+    height: 0.875rem;
+    border: 1px solid currentColor;
+  }
+  .servicio__icono--web::before {
+    border-radius: 0.2rem;
+    background: linear-gradient(currentColor, currentColor) 0 0.22rem / 100% 1px no-repeat;
+  }
+  .servicio__icono--api::before {
+    content: "›_";
+    border-radius: 0.2rem;
+    font: 700 0.65rem/0.875rem ui-monospace, monospace;
+    text-align: center;
+  }
+  .servicio__icono--db::before {
+    border-radius: 50% / 27%;
+    background: repeating-linear-gradient(transparent 0 0.24rem, currentColor 0.24rem 0.29rem);
+  }
+  .servicio__nombre { display: block; font-weight: 700; }
+  .servicio__puertos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.5rem;
+    overflow-wrap: anywhere;
+    color: #bdd0e0;
+    font-size: 0.8125rem;
+    margin-top: 0.25rem;
+  }
+  .servicio__puertos code { color: #a2eaff; }
+  .servicio__datos { min-width: 0; }
+  .servicio__estado {
+    border-radius: 1rem;
+    padding: 0.3rem 0.55rem;
+    background: #13352e;
+    color: #73f2be;
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+  .servicio__estado--error { background: #432431; color: #ffb4be; }
+  .servicio__estado--neutral { background: #26394f; color: #d2e1ef; }
+  .salud__codigo { color: #bdd0e0; margin: 0 0 1.25rem; font-size: 0.875rem; }
+  .salud__acciones { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem; }
+  .salud__acciones a {
+    padding: 0.75rem 1rem;
+    border: 1px solid #446d89;
+    border-radius: 0.65rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .salud__acciones a:hover { background: #1b3a53; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="salud{% if not disponible %} salud--error{% endif %}" aria-labelledby="titulo-salud">
+  <h1 id="titulo-salud">Buscaminas · Estado del servicio</h1>
+  <span class="salud__icono" aria-hidden="true">{% if disponible %}✓{% else %}!{% endif %}</span>
+  {% if disponible %}
+    <h2 class="salud__estado">Operativo</h2>
+    <p class="salud__detalle">Django se comunica correctamente con la base de datos.</p>
+  {% else %}
+    <h2 class="salud__estado">No disponible</h2>
+    <p class="salud__detalle">Django no pudo consultar la base de datos. Intenta actualizar el estado.</p>
+  {% endif %}
+  <ul class="servicios" aria-label="Estado por servicio">
+    <li class="servicio">
+      <span class="servicio__icono servicio__icono--web" aria-hidden="true"></span>
+      <div class="servicio__datos">
+        <span class="servicio__nombre">Caddy · web</span>
+        <span class="servicio__puertos">
+          <span>Contenedor <code>8000</code></span>
+          {% if proxy_verificado %}<span>Acceso <code>{{ request.get_host }}</code></span>{% endif %}
+        </span>
+      </div>
+      {% if proxy_verificado %}
+        <span class="servicio__estado">Healthy</span>
+      {% else %}
+        <span class="servicio__estado servicio__estado--neutral">Sin verificar</span>
+      {% endif %}
+    </li>
+    <li class="servicio">
+      <span class="servicio__icono servicio__icono--api" aria-hidden="true"></span>
+      <div class="servicio__datos">
+        <span class="servicio__nombre">Django · api</span>
+        <span class="servicio__puertos">
+          <span>Red interna <code>5000</code></span>
+          <span>Salud local <code>8000</code></span>
+        </span>
+      </div>
+      <span class="servicio__estado">Healthy</span>
+    </li>
+    <li class="servicio">
+      <span class="servicio__icono servicio__icono--db" aria-hidden="true"></span>
+      <div class="servicio__datos">
+        <span class="servicio__nombre">PostgreSQL · db</span>
+        <span class="servicio__puertos"><span>Red interna <code>5432</code></span></span>
+      </div>
+      {% if disponible %}
+        <span class="servicio__estado">Healthy</span>
+      {% else %}
+        <span class="servicio__estado servicio__estado--error">Unhealthy</span>
+      {% endif %}
+    </li>
+  </ul>
+  <p class="salud__codigo">HTTP {{ codigo }}</p>
+  <nav class="salud__acciones" aria-label="Acciones de estado">
+    <a href="{% url 'salud' %}">Actualizar estado</a>
+    <a href="/">Volver al inicio</a>
+  </nav>
+</section>
+{% endblock %}

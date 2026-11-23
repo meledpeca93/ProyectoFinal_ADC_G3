@@ -5,6 +5,8 @@
     }
 
     handle {
-        reverse_proxy api:5000
+        reverse_proxy api:5000 {
+            header_up X-Buscaminas-Proxy caddy
+        }
     }
 }

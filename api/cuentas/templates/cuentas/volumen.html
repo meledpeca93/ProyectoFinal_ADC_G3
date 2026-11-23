@@ -1,0 +1,7 @@
+<div class="perfil__volumen">
+  <span class="perfil__audio-icono" aria-hidden="true">{{ icono }}</span>
+  {{ campo.label_tag }}
+  {{ campo }}
+  <output for="{{ campo.id_for_label }}" data-volumen="{{ campo.id_for_label }}">{{ campo.value }} %</output>
+  {{ campo.errors }}
+</div>

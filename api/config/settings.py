@@ -61,6 +61,10 @@ AUTH_PASSWORD_VALIDATORS = [
         "CommonPasswordValidator", "NumericPasswordValidator",
     )
 ]
+LOGIN_URL = "cuentas:login"
+LOGIN_REDIRECT_URL = "perfil"
+LOGOUT_REDIRECT_URL = "cuentas:login"
+
 LANGUAGE_CODE = "es"
 TIME_ZONE = "America/Tegucigalpa"
 USE_TZ = True

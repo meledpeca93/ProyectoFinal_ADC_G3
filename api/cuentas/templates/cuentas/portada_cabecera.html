@@ -1,0 +1,12 @@
+<header class="portada__cabecera">
+  <a class="portada__marca" href="{% url 'inicio' %}">
+    <span class="portada__logo" aria-hidden="true"></span>
+    <span><strong>BUSCAMINAS</strong><small>Proyecto 3 · Arquitectura de Computadoras</small></span>
+  </a>
+  <nav class="portada__nav" aria-label="Navegación principal">
+    <a href="{% url 'inicio' %}"{% if request.resolver_match.url_name == 'inicio' %} aria-current="page"{% endif %} class="portada__nav-inicio"><span aria-hidden="true">⌂</span> Inicio</a>
+    <span aria-disabled="true"><span aria-hidden="true">⊙</span> Cómo jugar</span>
+    <span aria-disabled="true"><span aria-hidden="true">♜</span> Clasificación</span>
+    <a href="{% url 'perfil' %}"><span aria-hidden="true">◎</span> Mi perfil</a>
+  </nav>
+</header>

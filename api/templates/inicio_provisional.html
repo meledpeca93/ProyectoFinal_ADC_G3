@@ -2,4 +2,12 @@
 {% block content %}
   <h1>Buscaminas</h1>
   <p>Proyecto 3 de Arquitectura de Computadoras</p>
+  <nav aria-label="Cuenta">
+    {% if request.user.is_authenticated %}
+      <a href="{% url 'perfil' %}">Mi perfil</a>
+    {% else %}
+      <a href="{% url 'cuentas:login' %}">Iniciar sesión</a>
+      · <a href="{% url 'cuentas:registro' %}">Crear cuenta</a>
+    {% endif %}
+  </nav>
 {% endblock %}
