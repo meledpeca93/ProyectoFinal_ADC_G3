@@ -1,0 +1,89 @@
+
+{% extends "base.html" %}
+
+{% block title %}Inicio | Buscaminas{% endblock %}
+
+{% block content %}
+<div class="bm-pagina bm-inicio">
+
+  <header class="bm-cabecera">
+    <a class="bm-marca" href="{% url 'inicio_juego' %}">💣 BUSCAMINAS</a>
+
+    <nav class="bm-navegacion" aria-label="Navegación principal">
+      <a href="{% url 'inicio_juego' %}">Inicio</a>
+      <a href="#instrucciones">Instrucciones</a>
+      <a href="#clasificacion">Clasificación</a>
+    </nav>
+  </header>
+
+  <div class="bm-contenedor">
+
+    <section class="bm-tarjeta" aria-labelledby="titulo-inicio"
+             style="margin-block: 2rem; text-align: center;">
+
+      <p style="color: var(--bm-dorado); font-weight: 700;">
+        PROYECTO FINAL · ARQUITECTURA DE COMPUTADORAS
+      </p>
+
+      <h1 class="bm-titulo" id="titulo-inicio">
+        BUSCAMINAS
+      </h1>
+
+      <p class="bm-descripcion">
+        Descubre las casillas seguras, identifica las minas
+        y completa el tablero antes de que termine el tiempo.
+      </p>
+
+      <div style="margin-top: 2rem;">
+        <a class="bm-boton" href="#jugar">
+          Jugar
+        </a>
+      </div>
+
+      <p class="bm-descripcion" style="font-size: .9rem;">
+        Pon a prueba tu lógica, concentración y estrategia.
+      </p>
+    </section>
+
+    <section class="bm-cuadricula" aria-label="Opciones del juego"
+             style="margin-bottom: 2rem;">
+
+      <article class="bm-tarjeta" id="jugar">
+        <h2>🎮 Jugar</h2>
+        <p class="bm-descripcion">
+          Prepárate para comenzar una nueva partida
+          y superar los desafíos del tablero.
+        </p>
+        <p class="bm-descripcion">
+          Próximamente: selección de dificultad.
+        </p>
+      </article>
+
+      <article class="bm-tarjeta" id="instrucciones">
+        <h2>📖 Instrucciones</h2>
+        <p class="bm-descripcion">
+          Aprende cómo descubrir casillas, colocar banderas
+          y evitar las minas.
+        </p>
+        <a href="#instrucciones">Ver instrucciones</a>
+      </article>
+
+      <article class="bm-tarjeta" id="clasificacion">
+        <h2>🏆 Clasificación</h2>
+        <p class="bm-descripcion">
+          Consulta las mejores puntuaciones
+          y compite por un lugar en la clasificación.
+        </p>
+        <a href="#clasificacion">Ver clasificación</a>
+      </article>
+
+    </section>
+
+  </div>
+
+  <footer class="bm-pie">
+    Buscaminas · Proyecto Final · Grupo 3
+  </footer>
+
+</div>
+{% endblock %}

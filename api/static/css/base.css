@@ -1,0 +1,248 @@
+
+/* ==========================================
+   BUSCAMINAS - ESTILOS GLOBALES
+   Responsable: Modulo visual
+   ========================================== */
+
+:root {
+  --bm-fondo: #091426;
+  --bm-panel: #15263d;
+  --bm-panel-oscuro: #0a1728;
+  --bm-borde: #2b4865;
+  --bm-cian: #28e6ff;
+  --bm-dorado: #ffc362;
+  --bm-texto: #edf6ff;
+  --bm-texto-suave: #bccee2;
+  --bm-radio: 1rem;
+}
+
+.bm-pagina {
+  min-height: 100vh;
+  background: radial-gradient(
+    ellipse at 55% 4%,
+    #112742,
+    #060f1b 65%
+  );
+  color: var(--bm-texto);
+}
+
+.bm-contenedor {
+  box-sizing: border-box;
+  width: min(1200px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.bm-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem clamp(1rem, 4vw, 3rem);
+  background: linear-gradient(100deg, #16253b, #0a1424);
+  border-bottom: 1px solid var(--bm-borde);
+}
+
+.bm-marca {
+  color: var(--bm-texto);
+  font-size: clamp(1.25rem, 3vw, 1.8rem);
+  font-weight: 800;
+  text-decoration: none;
+  letter-spacing: .04em;
+}
+
+.bm-navegacion {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.bm-navegacion a,
+.bm-navegacion button {
+  display: inline-block;
+  padding: .7rem 1rem;
+  border: 1px solid transparent;
+  border-radius: .625rem;
+  background: transparent;
+  color: var(--bm-texto);
+  font: inherit;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.bm-navegacion a:hover,
+.bm-navegacion button:hover {
+  background: #1a3149;
+}
+
+.bm-tarjeta {
+  min-width: 0;
+  padding: clamp(1rem, 3vw, 1.75rem);
+  border: 1px solid var(--bm-borde);
+  border-radius: var(--bm-radio);
+  background: linear-gradient(
+    150deg,
+    var(--bm-panel),
+    var(--bm-panel-oscuro) 66%
+  );
+  box-shadow: 0 .75rem 2.5rem #02070f50;
+}
+
+.bm-boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: .8rem 1.4rem;
+  border: 1px solid var(--bm-cian);
+  border-radius: .7rem;
+  background: linear-gradient(155deg, #19445f, #0c3048);
+  color: #f0fcff;
+  font: inherit;
+  font-weight: 750;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.bm-boton:hover {
+  background: #175473;
+}
+
+.bm-boton--secundario {
+  border-color: var(--bm-borde);
+  background: #14263a;
+}
+
+.bm-boton--secundario:hover {
+  background: #1a3149;
+}
+
+.bm-titulo {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  line-height: 1.15;
+}
+
+.bm-descripcion {
+  color: var(--bm-texto-suave);
+  line-height: 1.6;
+}
+
+.bm-cuadricula {
+  display: grid;
+  grid-template-columns: repeat(
+    3,
+    minmax(0, 1fr)
+  );
+  gap: 1rem;
+}
+
+.bm-pie {
+  padding: 1.5rem;
+  border-top: 1px solid var(--bm-borde);
+  color: var(--bm-texto-suave);
+  text-align: center;
+  font-size: .875rem;
+}
+
+.bm-pagina :focus-visible {
+  outline: 2px solid var(--bm-cian);
+  outline-offset: 4px;
+}
+
+@media (max-width: 768px) {
+  .bm-cabecera {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .bm-navegacion {
+    justify-content: center;
+  }
+
+  .bm-cuadricula {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 360px) {
+  .bm-contenedor {
+    width: calc(100% - 1.5rem);
+  }
+
+  .bm-boton {
+    max-width: 100%;
+    padding-inline: .9rem;
+  }
+}
+
+
+/* ==========================================
+   PANTALLA DE INICIO
+   ========================================== */
+
+/* Amplía únicamente el contenedor de Inicio. */
+main:has(> .bm-inicio) {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+/* Evita que los elementos desborden su espacio. */
+.bm-inicio,
+.bm-inicio * {
+  box-sizing: border-box;
+}
+
+/* Distribución de las tarjetas en escritorio. */
+.bm-inicio .bm-cuadricula {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Diseño adaptable para tabletas y celulares. */
+@media (max-width: 768px) {
+  .bm-inicio .bm-cuadricula {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ==========================================
+   PANTALLA DE RESULTADO
+   ========================================== */
+
+/* Ancho exclusivo para la pantalla de Resultado */
+main:has(> .bm-resultado) {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+/* Evita que los elementos desborden */
+.bm-resultado,
+.bm-resultado * {
+  box-sizing: border-box;
+}
+
+/* Tarjetas de estadísticas */
+.bm-resultado .bm-cuadricula {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Textos de estadísticas */
+.bm-resultado .bm-tarjeta {
+  overflow-wrap: anywhere;
+}
+
+/* Adaptación para tabletas y celulares */
+@media (max-width: 768px) {
+  .bm-resultado .bm-cuadricula {
+    grid-template-columns: 1fr;
+  }
+}
+

@@ -10,4 +10,5 @@ urlpatterns = [
     path("cuentas/", include("cuentas.urls")),
     path("perfil/", perfil, name="perfil"),
     path("salud/", salud, name="salud"),
+    path("inicio-juego/", include("juego.urls")),
 ]

@@ -1,0 +1,138 @@
+
+{% extends "base.html" %}
+
+{% block title %}Resultado | Buscaminas{% endblock %}
+
+{% block content %}
+<div class="bm-pagina bm-resultado">
+
+  <header class="bm-cabecera">
+    <a class="bm-marca" href="{% url 'inicio_juego' %}">
+      💣 BUSCAMINAS
+    </a>
+
+    <nav class="bm-navegacion" aria-label="Navegación principal">
+      <a href="{% url 'inicio_juego' %}">Inicio</a>
+      <a href="{% url 'inicio_juego' %}">Volver al juego</a>
+    </nav>
+  </header>
+
+  <div class="bm-contenedor">
+
+    <section class="bm-tarjeta"
+             aria-labelledby="titulo-resultado"
+             style="margin-block: 2rem; text-align: center;">
+
+      <p style="color: var(--bm-dorado); font-weight: 700;">
+        RESULTADO DE LA PARTIDA
+      </p>
+
+      {% if estado == "GANADA" %}
+        <h1 class="bm-titulo" id="titulo-resultado">
+          🏆 ¡Victoria!
+        </h1>
+        <p class="bm-descripcion">
+          ¡Felicidades! Has descubierto todas las casillas seguras.
+        </p>
+
+      {% elif estado == "PERDIDA" %}
+        <h1 class="bm-titulo" id="titulo-resultado">
+          💣 Partida perdida
+        </h1>
+        <p class="bm-descripcion">
+          Encontraste una mina. ¡Inténtalo nuevamente!
+        </p>
+
+      {% elif estado == "TIEMPO_AGOTADO" %}
+        <h1 class="bm-titulo" id="titulo-resultado">
+          ⏰ Tiempo agotado
+        </h1>
+        <p class="bm-descripcion">
+          Se terminó el tiempo disponible para completar el tablero.
+        </p>
+
+      {% elif estado == "ABANDONADA" %}
+        <h1 class="bm-titulo" id="titulo-resultado">
+          🚪 Partida abandonada
+        </h1>
+        <p class="bm-descripcion">
+          Has salido de la partida antes de finalizarla.
+        </p>
+
+      {% else %}
+        <h1 class="bm-titulo" id="titulo-resultado">
+          Resultado no disponible
+        </h1>
+        <p class="bm-descripcion">
+          No se pudo determinar el estado de esta partida.
+        </p>
+      {% endif %}
+
+    </section>
+
+    <section class="bm-cuadricula"
+             aria-label="Estadísticas de la partida"
+             style="margin-bottom: 2rem;">
+
+      <article class="bm-tarjeta">
+        <h2>⭐ Puntuación</h2>
+        <p class="bm-descripcion">
+          {{ puntuacion|default_if_none:"No disponible" }}
+        </p>
+      </article>
+
+      <article class="bm-tarjeta">
+        <h2>⏱️ Duración</h2>
+        <p class="bm-descripcion">
+          {{ duracion|default_if_none:"No disponible" }}
+        </p>
+      </article>
+
+      <article class="bm-tarjeta">
+        <h2>🎯 Dificultad</h2>
+        <p class="bm-descripcion">
+          {{ dificultad|default_if_none:"No disponible" }}
+        </p>
+      </article>
+
+    </section>
+
+    <section class="bm-tarjeta"
+             aria-labelledby="titulo-estadisticas"
+             style="margin-bottom: 2rem;">
+
+      <h2 id="titulo-estadisticas">
+        📊 Estadísticas de la partida
+      </h2>
+
+      <p class="bm-descripcion">
+        Casillas descubiertas:
+        {{ casillas_descubiertas|default_if_none:"No disponible" }}
+      </p>
+
+      <p class="bm-descripcion">
+        Banderas colocadas:
+        {{ banderas_colocadas|default_if_none:"No disponible" }}
+      </p>
+
+      <p class="bm-descripcion">
+        Minas totales:
+        {{ minas_totales|default_if_none:"No disponible" }}
+      </p>
+
+    </section>
+
+    <div style="text-align: center; padding-bottom: 2rem;">
+      <a class="bm-boton" href="{% url 'inicio_juego' %}">
+        Volver al inicio
+      </a>
+    </div>
+
+  </div>
+
+  <footer class="bm-pie">
+    Buscaminas · Proyecto Final · Grupo 3
+  </footer>
+
+</div>
+{% endblock %}
