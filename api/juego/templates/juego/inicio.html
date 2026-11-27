@@ -1,89 +1,955 @@
-
 {% extends "base.html" %}
 
 {% block title %}Inicio | Buscaminas{% endblock %}
 
+{% block extra_head %}
+
+<style>
+
+    main {
+        width: 98%;
+        max-width: 1500px;
+        margin: 15px auto;
+    }
+
+    .portada {
+        background: #09131f;
+        color: #edf5ff;
+        border: 9px solid #142538;
+        border-radius: 16px;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+    }
+
+    /* CABECERA */
+
+    .inicio-cabecera {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 15px 30px;
+        background: linear-gradient(120deg, #172437, #0b1422);
+        border-bottom: 1px solid #34465e;
+    }
+
+    .inicio-marca {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: white;
+        text-decoration: none;
+    }
+
+    .inicio-marca strong {
+        font-size: 27px;
+    }
+
+    .inicio-marca small {
+        display: block;
+        font-size: 12px;
+        color: #c3d3e6;
+    }
+
+    .icono-marca {
+        font-size: 40px;
+    }
+
+    .inicio-nav {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .inicio-nav a {
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        padding: 9px 17px;
+    }
+
+    .inicio-nav a.activo {
+        background: #103b59;
+        border: 1px solid #00bfff;
+        border-radius: 8px;
+        box-shadow: 0 0 12px #00bfff55;
+    }
+
+    /* DISTRIBUCION PRINCIPAL */
+
+    .inicio-contenido {
+        display: grid;
+        grid-template-columns: minmax(0, 2.6fr) minmax(230px, 1fr);
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .inicio-principal {
+        background: #0c1b2b;
+        border: 1px solid #24506d;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    /* PRESENTACION */
+
+    .presentacion {
+        position: relative;
+        min-height: 370px;
+        padding: 25px 35px;
+        overflow: hidden;
+        background: radial-gradient(
+            ellipse at 78% 45%,
+            #075575,
+            #102b40 30%,
+            #0b1828 65%
+        );
+    }
+
+    .presentacion-texto {
+        position: relative;
+        z-index: 3;
+        width: 55%;
+    }
+
+    .etiqueta {
+        display: inline-block;
+        color: #e1f5ff;
+        background: #12354c;
+        border: 1px solid #078dbb;
+        border-radius: 20px;
+        padding: 6px 15px;
+        font-size: 12px;
+    }
+
+    .presentacion h1 {
+        font-size: clamp(30px, 4vw, 56px);
+        margin: 12px 0 0;
+        color: white;
+        letter-spacing: 1px;
+    }
+
+    .subtitulo {
+        color: #c7d8eb;
+        font-size: 18px;
+        margin: 0 0 20px;
+    }
+
+    .bienvenida {
+        border-left: 3px solid #00dcff;
+        padding-left: 15px;
+        margin-bottom: 25px;
+        box-shadow: -5px 0 10px -5px #00dcff;
+    }
+
+    .bienvenida h2 {
+        font-size: 19px;
+        margin: 0 0 6px;
+    }
+
+    .bienvenida p {
+        font-size: 14px;
+        line-height: 1.5;
+        color: #d1deed;
+        margin: 0;
+    }
+
+    /* BOTON JUGAR */
+
+    .jugar-ahora {
+        display: block;
+        text-align: center;
+        background: linear-gradient(
+            180deg,
+            #1283a6,
+            #07516d
+        );
+        color: white;
+        text-decoration: none;
+        font-size: 23px;
+        font-weight: bold;
+        padding: 13px;
+        border: 2px solid #65f1ff;
+        border-radius: 12px;
+        box-shadow:
+            0 0 15px #00d9ff,
+            inset 0 0 12px #00d9ff;
+        transition: .2s;
+    }
+
+    .jugar-ahora:hover {
+        background: #168cb2;
+        box-shadow: 0 0 25px #00d9ff;
+        color: white;
+    }
+
+    .botones-cuenta {
+        display: flex;
+        gap: 12px;
+        margin-top: 18px;
+    }
+
+    .botones-cuenta a {
+        flex: 1;
+        text-align: center;
+        color: white;
+        text-decoration: none;
+        background: #14283c;
+        border: 1px solid #527b9e;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .botones-cuenta a:hover {
+        border-color: #00d9ff;
+        background: #16405a;
+    }
+
+    /* MINA DECORATIVA */
+
+    .ilustracion {
+        position: absolute;
+        width: 42%;
+        height: 100%;
+        top: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .mina-grande {
+        position: relative;
+        width: clamp(100px, 13vw, 190px);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: radial-gradient(
+            circle at 30% 25%,
+            #4a6686,
+            #20354f 30%,
+            #0c1726 65%,
+            #030a13
+        );
+        border: 6px solid #ffc52c;
+        box-shadow:
+            0 0 15px #ffb300,
+            0 0 45px #ff9d0066,
+            inset 0 0 15px #ffffff44;
+    }
+
+    .punta {
+        position: absolute;
+        width: 15%;
+        height: 25%;
+        background: linear-gradient(
+            90deg,
+            #ff9d00,
+            #ffe77b,
+            #ffb300
+        );
+        border-radius: 7px;
+        top: 50%;
+        left: 50%;
+        transform:
+            translate(-50%, -50%)
+            rotate(var(--angulo))
+            translateY(-235%);
+        box-shadow: 0 0 12px #ffb300;
+    }
+
+    .marca-mina {
+        position: absolute;
+        width: 15%;
+        height: 15%;
+        border-radius: 50%;
+        background: linear-gradient(
+            140deg,
+            #607d9d,
+            #0a1422
+        );
+        box-shadow: 2px 3px 4px #0009;
+    }
+
+    .marca-uno {
+        top: 18%;
+        left: 25%;
+    }
+
+    .marca-dos {
+        top: 30%;
+        right: 17%;
+    }
+
+    .marca-tres {
+        bottom: 27%;
+        left: 25%;
+    }
+
+    .marca-cuatro {
+        bottom: 12%;
+        right: 23%;
+        background: #ffc400;
+        box-shadow: 0 0 15px #ffc400;
+    }
+
+    /* MONTAÑAS DEL FONDO */
+
+    .montanas {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 45%;
+        background: linear-gradient(
+            150deg,
+            #0c263c,
+            #0c7195,
+            #071522
+        );
+        clip-path: polygon(
+            0 100%,
+            20% 65%,
+            35% 85%,
+            52% 25%,
+            64% 65%,
+            78% 5%,
+            89% 55%,
+            100% 20%,
+            100% 100%
+        );
+        opacity: .8;
+    }
+
+    /* NIVELES DE DIFICULTAD */
+
+    .dificultades {
+        display: grid;
+        grid-template-columns: 1.7fr repeat(3, 1fr);
+        align-items: center;
+        gap: 12px;
+        margin: 12px;
+        padding: 16px;
+        border: 1px solid #35536d;
+        border-radius: 12px;
+        background: linear-gradient(
+            120deg,
+            #192b40,
+            #101c2b
+        );
+    }
+
+    .dificultades h3 {
+        font-size: 17px;
+        margin: 0 0 10px;
+    }
+
+    .dificultades p {
+        color: #c4d3e6;
+        font-size: 12px;
+        margin: 0;
+    }
+
+    .nivel-inicio {
+        text-align: center;
+        background: linear-gradient(
+            140deg,
+            #26394e,
+            #132234
+        );
+        border: 1px solid #45617c;
+        border-radius: 10px;
+        padding: 13px 8px;
+    }
+
+    .nivel-inicio strong {
+        display: block;
+        font-size: 15px;
+    }
+
+    .nivel-inicio small {
+        display: block;
+        margin: 7px 0;
+    }
+
+    .nivel-inicio span {
+        display: inline-block;
+        background: #30465e;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 12px;
+    }
+
+    .nivel-inicio.normal {
+        border: 2px solid #00d9ff;
+        background: #10364e;
+        box-shadow: 0 0 12px #00d9ff66;
+    }
+
+    /* PANEL DERECHO */
+
+    .caracteristicas {
+        background: linear-gradient(
+            145deg,
+            #142437,
+            #0b1624
+        );
+        border: 1px solid #2a4e69;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .caracteristicas h2 {
+        background: linear-gradient(
+            90deg,
+            #1b344a,
+            #142437
+        );
+        padding: 15px;
+        margin: 0;
+        font-size: 20px;
+        border-bottom: 1px solid #304c65;
+    }
+
+    .caracteristicas-lista {
+        padding: 10px 18px;
+    }
+
+    .caracteristica {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 0;
+        border-bottom: 1px solid #24364a;
+    }
+
+    .caracteristica:last-child {
+        border-bottom: none;
+    }
+
+    .caracteristica-icono {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 46px;
+        height: 46px;
+        background: linear-gradient(
+            145deg,
+            #20394e,
+            #102235
+        );
+        border: 1px solid #315673;
+        border-radius: 10px;
+        font-size: 24px;
+        color: #00dcff;
+    }
+
+    .caracteristica strong {
+        display: block;
+        font-size: 15px;
+        margin-bottom: 5px;
+    }
+
+    .caracteristica p {
+        font-size: 12px;
+        color: #cbd9e9;
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    /* PIE DE PAGINA */
+
+    .inicio-pie {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        background: #132236;
+        border-top: 1px solid #34506a;
+        padding: 15px 25px;
+        font-size: 12px;
+        color: #c9d9eb;
+    }
+
+    /* PANTALLAS PEQUEÑAS */
+
+    @media (max-width: 950px) {
+
+        .inicio-contenido {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .caracteristicas-lista {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+    }
+
+    @media (max-width: 600px) {
+
+        .inicio-cabecera {
+            padding: 15px;
+        }
+
+        .inicio-nav {
+            gap: 5px;
+        }
+
+        .inicio-nav a {
+            padding: 8px;
+        }
+
+        .presentacion {
+            padding: 20px;
+        }
+
+        .presentacion-texto {
+            width: 100%;
+        }
+
+        .ilustracion {
+            display: none;
+        }
+
+        .dificultades {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            padding: 10px;
+            gap: 6px;
+        }
+
+        .dificultades-texto {
+            grid-column: 1 / -1;
+        }
+
+        .caracteristicas-lista {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .botones-cuenta {
+            flex-wrap: wrap;
+        }
+
+        .inicio-pie {
+            justify-content: center;
+            text-align: center;
+        }
+    }
+
+</style>
+
+{% endblock %}
+
+
 {% block content %}
-<div class="bm-pagina bm-inicio">
 
-  <header class="bm-cabecera">
-    <a class="bm-marca" href="{% url 'inicio_juego' %}">💣 BUSCAMINAS</a>
+<div class="portada">
 
-    <nav class="bm-navegacion" aria-label="Navegación principal">
-      <a href="{% url 'inicio_juego' %}">Inicio</a>
-      <a href="#instrucciones">Instrucciones</a>
-      <a href="#clasificacion">Clasificación</a>
-    </nav>
-  </header>
+    <!-- CABECERA -->
 
-  <div class="bm-contenedor">
+    <header class="inicio-cabecera">
 
-    <section class="bm-tarjeta" aria-labelledby="titulo-inicio"
-             style="margin-block: 2rem; text-align: center;">
+        <a class="inicio-marca"
+           href="{% url 'inicio_juego' %}">
 
-      <p style="color: var(--bm-dorado); font-weight: 700;">
-        PROYECTO FINAL · ARQUITECTURA DE COMPUTADORAS
-      </p>
+            <span class="icono-marca">💣</span>
 
-      <h1 class="bm-titulo" id="titulo-inicio">
-        BUSCAMINAS
-      </h1>
+            <span>
 
-      <p class="bm-descripcion">
-        Descubre las casillas seguras, identifica las minas
-        y completa el tablero antes de que termine el tiempo.
-      </p>
+                <strong>BUSCAMINAS</strong>
 
-      <div style="margin-top: 2rem;">
-        <a class="bm-boton" href="#jugar">
-          Jugar
+                <small>
+                    Proyecto 3 · Arquitectura de Computadoras
+                </small>
+
+            </span>
+
         </a>
-      </div>
 
-      <p class="bm-descripcion" style="font-size: .9rem;">
-        Pon a prueba tu lógica, concentración y estrategia.
-      </p>
+        <nav class="inicio-nav">
+
+            <a class="activo"
+               href="{% url 'inicio_juego' %}">
+                ⌂ Inicio
+            </a>
+
+            <a href="#instrucciones">
+                ⓘ Cómo jugar
+            </a>
+
+            <a href="#clasificacion">
+                🏆 Clasificación
+            </a>
+
+            <a href="{% url 'perfil' %}">
+                ♙ Mi perfil
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <div class="inicio-contenido">
+
+        <!-- PANEL PRINCIPAL -->
+
+        <section class="inicio-principal">
+
+            <div class="presentacion">
+
+                <div class="presentacion-texto">
+
+                    <span class="etiqueta">
+                        🎓 Juego educativo
+                    </span>
+
+                    <h1>BUSCAMINAS</h1>
+
+                    <p class="subtitulo">
+                        Proyecto 3 · Arquitectura de Computadoras
+                    </p>
+
+                    <div class="bienvenida">
+
+                        <h2>¡Bienvenido a Buscaminas!</h2>
+
+                        <p>
+                            Pon a prueba tu lógica y estrategia,
+                            despeja las casillas seguras y evita
+                            las minas. Aprende, juega y compite
+                            mientras refuerzas conceptos de
+                            Arquitectura de Computadoras.
+                        </p>
+
+                    </div>
+
+                    <a class="jugar-ahora"
+                       href="{% url 'pantalla_juego' %}">
+
+                        🎮 Jugar ahora →
+
+                    </a>
+
+                    <div class="botones-cuenta">
+
+                        {% if request.user.is_authenticated %}
+
+                            <a href="{% url 'perfil' %}">
+                                ♙ Mi perfil
+                            </a>
+
+                        {% else %}
+
+                            <a href="{% url 'cuentas:login' %}">
+                                ♙ Iniciar sesión
+                            </a>
+
+                            <a href="{% url 'cuentas:registro' %}">
+                                ♙ Registrarse
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- MINA DECORATIVA -->
+
+                <div class="ilustracion" aria-hidden="true">
+
+                    <div class="mina-grande">
+
+                        <span class="punta"
+                              style="--angulo: 0deg"></span>
+
+                        <span class="punta"
+                              style="--angulo: 45deg"></span>
+
+                        <span class="punta"
+                              style="--angulo: 90deg"></span>
+
+                        <span class="punta"
+                              style="--angulo: 135deg"></span>
+
+                        <span class="punta"
+                              style="--angulo: 180deg"></span>
+
+                        <span class="punta"
+                              style="--angulo: 225deg"></span>
+
+                        <span class="punta"
+                              style="--angulo: 270deg"></span>
+
+                        <span class="punta"
+                              style="--angulo: 315deg"></span>
+
+                        <span class="marca-mina marca-uno"></span>
+
+                        <span class="marca-mina marca-dos"></span>
+
+                        <span class="marca-mina marca-tres"></span>
+
+                        <span class="marca-mina marca-cuatro"></span>
+
+                    </div>
+
+                </div>
+
+                <div class="montanas"></div>
+
+            </div>
+
+
+            <!-- DIFICULTADES -->
+
+            <div class="dificultades">
+
+                <div class="dificultades-texto">
+
+                    <h3>▦ Niveles de dificultad</h3>
+
+                    <p>
+                        Elige el reto que más te convenga
+                        y mejora tus habilidades paso a paso.
+                    </p>
+
+                </div>
+
+                <div class="nivel-inicio">
+
+                    <strong>▦ Fácil</strong>
+
+                    <small>8 × 8</small>
+
+                    <span>10 minas</span>
+
+                </div>
+
+                <div class="nivel-inicio normal">
+
+                    <strong>▦ Normal</strong>
+
+                    <small>10 × 10</small>
+
+                    <span>18 minas</span>
+
+                </div>
+
+                <div class="nivel-inicio">
+
+                    <strong>▦ Difícil</strong>
+
+                    <small>12 × 12</small>
+
+                    <span>30 minas</span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PANEL DE CARACTERISTICAS -->
+
+        <aside class="caracteristicas">
+
+            <h2>⚙ Características</h2>
+
+            <div class="caracteristicas-lista">
+
+                <div class="caracteristica">
+
+                    <div class="caracteristica-icono">
+                        ▣
+                    </div>
+
+                    <div>
+
+                        <strong>Juego web</strong>
+
+                        <p>
+                            Juega desde tu navegador,
+                            sin instalaciones.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="caracteristica"
+                     id="clasificacion">
+
+                    <div class="caracteristica-icono">
+                        🏆
+                    </div>
+
+                    <div>
+
+                        <strong>Puntajes</strong>
+
+                        <p>
+                            Compite y obtén los mejores tiempos.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="caracteristica">
+
+                    <div class="caracteristica-icono">
+                        ▥
+                    </div>
+
+                    <div>
+
+                        <strong>Historial</strong>
+
+                        <p>
+                            Consulta tus partidas y progreso.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="caracteristica">
+
+                    <div class="caracteristica-icono">
+                        ♙
+                    </div>
+
+                    <div>
+
+                        <strong>Perfil</strong>
+
+                        <p>
+                            Personaliza tu cuenta y estadísticas.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="caracteristica">
+
+                    <div class="caracteristica-icono">
+                        ▣
+                    </div>
+
+                    <div>
+
+                        <strong>Responsive</strong>
+
+                        <p>
+                            Disfruta una experiencia óptima
+                            en computadora, tablet o celular.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="caracteristica">
+
+                    <div class="caracteristica-icono">
+                        ♫
+                    </div>
+
+                    <div>
+
+                        <strong>Audio</strong>
+
+                        <p>
+                            Efectos de sonido que hacen
+                            la experiencia más divertida.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+
+    <!-- INSTRUCCIONES -->
+
+    <section id="instrucciones"
+             style="margin: 0 16px 16px;
+                    padding: 15px;
+                    background: #142437;
+                    border: 1px solid #2a4e69;
+                    border-radius: 10px;">
+
+        <details>
+
+            <summary style="cursor: pointer; font-weight: bold;">
+                ⓘ ¿Cómo jugar Buscaminas?
+            </summary>
+
+            <ul style="font-size: 14px; line-height: 1.8;">
+
+                <li>
+                    Selecciona un nivel de dificultad.
+                </li>
+
+                <li>
+                    Descubre las casillas con clic izquierdo.
+                </li>
+
+                <li>
+                    Los números indican cuántas minas
+                    hay alrededor.
+                </li>
+
+                <li>
+                    Utiliza el modo bandera para marcar
+                    posibles minas.
+                </li>
+
+                <li>
+                    Descubre todas las casillas seguras
+                    antes de que termine el tiempo.
+                </li>
+
+            </ul>
+
+        </details>
+
     </section>
 
-    <section class="bm-cuadricula" aria-label="Opciones del juego"
-             style="margin-bottom: 2rem;">
 
-      <article class="bm-tarjeta" id="jugar">
-        <h2>🎮 Jugar</h2>
-        <p class="bm-descripcion">
-          Prepárate para comenzar una nueva partida
-          y superar los desafíos del tablero.
-        </p>
-        <p class="bm-descripcion">
-          Próximamente: selección de dificultad.
-        </p>
-      </article>
+    <!-- PIE DE PAGINA -->
 
-      <article class="bm-tarjeta" id="instrucciones">
-        <h2>📖 Instrucciones</h2>
-        <p class="bm-descripcion">
-          Aprende cómo descubrir casillas, colocar banderas
-          y evitar las minas.
-        </p>
-        <a href="#instrucciones">Ver instrucciones</a>
-      </article>
+    <footer class="inicio-pie">
 
-      <article class="bm-tarjeta" id="clasificacion">
-        <h2>🏆 Clasificación</h2>
-        <p class="bm-descripcion">
-          Consulta las mejores puntuaciones
-          y compite por un lugar en la clasificación.
-        </p>
-        <a href="#clasificacion">Ver clasificación</a>
-      </article>
+        <span>
+            &lt;/&gt; Python · Django · PostgreSQL · Docker
+        </span>
 
-    </section>
+        <span>
+            ▣ Proyecto de clase · Arquitectura de Computadoras
+        </span>
 
-  </div>
-
-  <footer class="bm-pie">
-    Buscaminas · Proyecto Final · Grupo 3
-  </footer>
+    </footer>
 
 </div>
+
 {% endblock %}

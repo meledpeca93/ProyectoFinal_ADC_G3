@@ -1,0 +1,1241 @@
+{% extends "base.html" %}
+
+{% block title %}Jugar | Buscaminas{% endblock %}
+
+{% block extra_head %}
+
+<style>
+
+    main {
+        width: calc(100% - 24px);
+        max-width: 1500px;
+        margin: 12px auto;
+    }
+
+    .juego {
+        color: #e4edf9;
+        font-family: system-ui, Arial, sans-serif;
+        background: #09121f;
+        border: 8px solid #132438;
+        border-radius: 17px;
+        overflow: hidden;
+    }
+
+    /* CABECERA */
+
+    .cabecera {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(110deg, #172437, #0b1422);
+        border-bottom: 1px solid #2c4058;
+        padding: 12px 26px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: clamp(18px, 2.1vw, 30px);
+        font-weight: bold;
+        line-height: 1;
+        letter-spacing: .03em;
+    }
+
+    .marca-icono {
+        font-size: 36px;
+    }
+
+    .logo small {
+        display: block;
+        font-size: 11px;
+        font-weight: 400;
+        letter-spacing: 0;
+        margin-top: 5px;
+        color: #b7c6d8;
+    }
+
+    .navegacion {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .navegacion a,
+    .navegacion span {
+        font-size: 13px;
+        padding: 8px 12px;
+        color: #dce7f4;
+        text-decoration: none;
+    }
+
+    .navegacion a.actual {
+        border: 1px solid #00a9e8;
+        background: #103b59;
+        border-radius: 7px;
+        box-shadow: 0 0 9px #00a9e855;
+    }
+
+    .navegacion .pendiente {
+        color: #8294aa;
+    }
+
+    /* DISTRIBUCION DEL JUEGO */
+
+    .contenido-juego {
+        display: grid;
+        grid-template-columns: minmax(150px, 18%)
+                               minmax(0, 1fr)
+                               minmax(210px, 27%);
+        gap: 12px;
+        padding: 14px 10px;
+        align-items: stretch;
+    }
+
+    .contenido-juego > section {
+        min-width: 0;
+        background: radial-gradient(
+            ellipse at center,
+            #122033,
+            #0a1320 75%
+        );
+        border-radius: 10px;
+        padding: 0 8px 10px;
+    }
+
+    /* PANELES LATERALES */
+
+    .panel {
+        background: linear-gradient(145deg, #19283c, #101a29);
+        border: 1px solid #293c52;
+        border-radius: 9px;
+        padding: 12px;
+        margin-bottom: 9px;
+        box-shadow: inset 0 1px 0 #ffffff08;
+    }
+
+    .contenido-juego > aside.panel {
+        margin: 0;
+        background: linear-gradient(150deg, #111d2d, #0c1625);
+    }
+
+    .panel h3 {
+        font-size: 14px;
+        padding: 8px;
+        margin: -5px -5px 9px;
+        background: linear-gradient(100deg, #1e2e43, #142132);
+        border-radius: 5px;
+    }
+
+    .panel p {
+        font-size: 12px;
+    }
+
+    /* BOTONES DE DIFICULTAD */
+
+    .nivel {
+        position: relative;
+        display: block;
+        width: 100%;
+        text-align: left;
+        background: linear-gradient(140deg, #1b2b40, #111d2e);
+        color: white;
+        border: 1px solid #34465e;
+        border-radius: 7px;
+        padding: 12px 10px 12px 38px;
+        margin: 8px 0;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .nivel::before {
+        content: '▦';
+        position: absolute;
+        left: 10px;
+        top: 14px;
+        color: #6594bf;
+        font-size: 22px;
+    }
+
+    .nivel:hover,
+    .nivel.activo {
+        border-color: #00d5ff;
+        background: linear-gradient(120deg, #123a58, #10283e);
+        box-shadow: 0 0 9px #00b9ed66,
+                    inset 0 0 8px #00b9ed22;
+    }
+
+    .nivel.activo::before {
+        color: #00d5ff;
+    }
+
+    .nivel.activo::after {
+        content: '✓';
+        position: absolute;
+        right: 7px;
+        top: 5px;
+        color: #00d5ff;
+    }
+
+    .nivel small {
+        display: block;
+        color: #b8c9dc;
+        margin-top: 5px;
+        font-size: 11px;
+        font-weight: 400;
+    }
+
+    /* INDICADORES SUPERIORES */
+
+    .indicadores {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        align-items: center;
+        background: linear-gradient(110deg, #14263a, #101b2b);
+        border: 1px solid #31516a;
+        box-shadow: inset 0 0 0 3px #0b1725;
+        border-radius: 10px;
+        padding: 9px 5px;
+        font-size: 12px;
+    }
+
+    .indicadores > span:not(.estado) {
+        padding: 2px 9px;
+        border-right: 1px solid #314257;
+    }
+
+    #nivel {
+        color: #ffd050;
+    }
+
+    .estado {
+        color: #ffcc33;
+        background: #473710;
+        border: 1px solid #8b6920;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        margin: 3px;
+    }
+
+    /* TABLERO */
+
+    .tablero {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+        gap: 2px;
+        width: min(100%, 480px);
+        margin: 14px auto;
+        padding: 4px;
+        box-sizing: border-box;
+        background: #102638;
+        border: 2px solid #31546c;
+        border-radius: 10px;
+        box-shadow: 0 0 0 3px #0b1a29,
+                    0 5px 16px #0007;
+    }
+
+    .casilla {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        aspect-ratio: 1;
+        padding: 0;
+        min-width: 0;
+        background: linear-gradient(145deg, #536781, #26364d 75%);
+        border: 1px solid #657b96;
+        border-radius: 4px;
+        box-shadow: inset 1px 1px 2px #ffffff35,
+                    inset -2px -2px 3px #0006;
+        color: white;
+        font-size: clamp(13px, 2vw, 23px);
+        font-weight: bold;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .casilla:hover {
+        background: #39677e;
+        border-color: #00d5ff;
+    }
+
+    .casilla.descubierta {
+        background: linear-gradient(145deg, #e2e9f3, #bac8dc);
+        color: #1252b7;
+        border-color: #a4b4cb;
+        box-shadow: inset 0 0 2px #fff9;
+    }
+
+    .casilla:disabled {
+        opacity: 1;
+        cursor: default;
+    }
+
+    /* BOTONES DE CONTROL */
+
+    .controles {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin: 12px 0 0;
+    }
+
+    .boton {
+        flex: 1 1 105px;
+        max-width: 190px;
+        padding: 10px 8px;
+        color: white;
+        background: linear-gradient(120deg, #263c54, #19283c);
+        border: 1px solid #405773;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 650;
+        cursor: pointer;
+    }
+
+    .boton-cian {
+        background: linear-gradient(120deg, #086386, #123a55);
+        border-color: #00d5ff;
+        box-shadow: 0 0 10px #00b9ed55;
+    }
+
+    /* PANEL DE PROGRESO */
+
+    .dato {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 12px;
+        padding: 9px 0;
+        border-bottom: 1px solid #29394d;
+    }
+
+    .dato b {
+        white-space: nowrap;
+    }
+
+    .reglas {
+        padding-left: 18px;
+        font-size: 12px;
+        line-height: 1.55;
+        margin-bottom: 4px;
+    }
+
+    .reglas li::marker {
+        color: #ffcc33;
+    }
+
+    /* PIE DE PAGINA */
+
+    .pie {
+        background: linear-gradient(100deg, #152439, #101a29);
+        border-top: 1px solid #293c52;
+        padding: 13px;
+        font-size: 12px;
+        color: #a9bed4;
+        text-align: center;
+    }
+
+    /* ADAPTACION A PANTALLAS PEQUEÑAS */
+
+    @media (max-width: 1000px) {
+
+        .contenido-juego {
+            grid-template-columns: 150px minmax(0, 1fr);
+        }
+
+        .contenido-juego > aside:last-child {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+        }
+    }
+
+    @media (max-width: 650px) {
+
+        main {
+            width: calc(100% - 10px);
+            margin: 5px auto;
+        }
+
+        .juego {
+            border-width: 4px;
+        }
+
+        .cabecera {
+            padding: 10px;
+        }
+
+        .contenido-juego {
+            grid-template-columns: minmax(0, 1fr);
+            padding: 8px;
+        }
+
+        .contenido-juego > aside:last-child {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .indicadores > span:not(.estado) {
+            padding: 3px 6px;
+        }
+
+        .casilla {
+            font-size: clamp(12px, 4vw, 20px);
+        }
+
+        .nivel {
+            margin: 5px 0;
+        }
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="juego">
+
+    <!-- CABECERA -->
+
+    <header class="cabecera">
+
+        <div class="logo">
+
+            <span class="marca-icono">💣</span>
+
+            <span>
+                BUSCAMINAS
+
+                <small>
+                    Proyecto 3 · Arquitectura de Computadoras
+                </small>
+            </span>
+
+        </div>
+
+        <nav class="navegacion">
+
+            <a class="actual"
+               href="{% url 'inicio_juego' %}">
+                ⌂ Inicio
+            </a>
+
+            <a href="#reglas-juego">
+                ⓘ Cómo jugar
+            </a>
+
+            <span class="pendiente"
+                  title="Pendiente de integración">
+                🏆 Clasificación
+            </span>
+
+            <a href="{% url 'perfil' %}">
+                ♙ Mi perfil
+            </a>
+
+        </nav>
+
+        <div>
+            👤 {{ request.user.username|default:"Invitado" }}
+        </div>
+
+    </header>
+
+
+    <div class="contenido-juego">
+
+        <!-- PANEL IZQUIERDO -->
+
+        <aside class="panel">
+
+            <h3>🎮 Nuevo juego</h3>
+
+            <p>Selecciona un nivel</p>
+
+            <button type="button"
+                    class="nivel activo"
+                    onclick="seleccionarNivel(this, 8, 10, '04:00', 'Fácil')">
+
+                Fácil
+                <small>8 × 8 — 10 minas</small>
+
+            </button>
+
+            <button type="button"
+                    class="nivel"
+                    onclick="seleccionarNivel(this, 10, 18, '06:00', 'Normal')">
+
+                Normal
+                <small>10 × 10 — 18 minas</small>
+
+            </button>
+
+            <button type="button"
+                    class="nivel"
+                    onclick="seleccionarNivel(this, 12, 30, '08:00', 'Difícil')">
+
+                Difícil
+                <small>12 × 12 — 30 minas</small>
+
+            </button>
+
+        </aside>
+
+
+        <!-- PANEL CENTRAL -->
+
+        <section>
+
+            <div class="indicadores">
+
+                <span>
+                    Nivel: <b id="nivel">Fácil</b>
+                </span>
+
+                <span>
+                    💣 <b id="minas">10</b> minas
+                </span>
+
+                <span>
+                    ⏱ <b id="tiempo">04:00</b>
+                </span>
+
+                <span>
+                    🚩 <b id="banderas">0</b>
+                </span>
+
+                <span class="estado">
+                    SIN INICIAR
+                </span>
+
+            </div>
+
+
+            <!-- TABLERO DEL JUEGO -->
+
+            <div class="tablero" id="tablero">
+
+                {% for casilla in casillas %}
+
+                    <button type="button"
+                            class="casilla"
+                            onclick="presionar(this)">
+                    </button>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- BOTONES DE CONTROL -->
+
+            <div class="controles">
+
+                <button type="button"
+                        class="boton"
+                        onclick="nuevaPartida()">
+
+                    ↻ Nueva partida
+
+                </button>
+
+                <button type="button"
+                        class="boton boton-cian"
+                        id="modoBandera"
+                        onclick="activarBandera()">
+
+                    ⚑ Modo bandera
+
+                </button>
+
+                <button type="button"
+                        class="boton"
+                        onclick="abandonar()">
+
+                    ⇥ Abandonar
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- PANEL DERECHO -->
+
+        <aside>
+
+            <div class="panel">
+
+                <h3>📊 Tu progreso</h3>
+
+                <div class="dato">
+
+                    <span>Casillas descubiertas</span>
+
+                    <b id="progreso">0 / 54</b>
+
+                </div>
+
+                <div class="dato">
+
+                    <span>Movimientos</span>
+
+                    <b id="movimientos">0</b>
+
+                </div>
+
+                <div class="dato">
+
+                    <span>Tiempo transcurrido</span>
+
+                    <b id="transcurrido">00:00</b>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <h3 id="reglas-juego">
+                    ⓘ Cómo jugar
+                </h3>
+
+                <ul class="reglas">
+
+                    <li>
+                        Descubre casillas con clic izquierdo.
+                    </li>
+
+                    <li>
+                        Los números indican cuántas minas hay alrededor.
+                    </li>
+
+                    <li>
+                        Usa las banderas para marcar posibles minas.
+                    </li>
+
+                    <li>
+                        Descubre todas las casillas seguras para ganar.
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div class="panel">
+
+                <h3>🏆 Mejores puntajes</h3>
+
+                <p>Sin resultados disponibles.</p>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+
+    <!-- PIE DE PAGINA -->
+
+    <footer class="pie">
+
+        Python · Django · PostgreSQL · Docker
+        — Arquitectura de Computadoras
+
+    </footer>
+
+</div>
+
+
+<script>
+
+    let banderaActiva = false;
+    let partidaId = null;
+    let enviando = false;
+    let tiempoInicial = 240;
+
+
+    // CREAR UNA PARTIDA EN DJANGO
+
+    async function crearPartida(nivel) {
+
+        let respuesta = await fetch(
+            "{% url 'nueva_partida' %}",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+
+                body: JSON.stringify({
+                    nivel: nivel
+                })
+            }
+        );
+
+        if (!respuesta.ok || respuesta.redirected) {
+
+            alert("No se pudo crear la partida. Código: " + respuesta.status);
+
+            return false;
+        }
+
+        let datos = await respuesta.json();
+
+        partidaId = datos.partida_id;
+
+        if (nivel === "FACIL") {
+            tiempoInicial = 240;
+        }
+
+        if (nivel === "NORMAL") {
+            tiempoInicial = 360;
+        }
+
+        if (nivel === "DIFICIL") {
+            tiempoInicial = 480;
+        }
+
+        document.querySelector(".estado").textContent =
+            "EN CURSO";
+
+        console.log("Partida creada:", partidaId);
+
+        return true;
+    }
+
+
+    // CAMBIAR NIVEL DE DIFICULTAD
+
+    async function seleccionarNivel(boton, cantidad, minas, tiempo, nombre) {
+
+        if (enviando) {
+            return;
+        }
+
+        enviando = true;
+
+        try {
+
+            let nivel;
+
+            if (nombre === "Fácil") {
+                nivel = "FACIL";
+            }
+
+            if (nombre === "Normal") {
+                nivel = "NORMAL";
+            }
+
+            if (nombre === "Difícil") {
+                nivel = "DIFICIL";
+            }
+
+
+            // CERRAR LA PARTIDA ANTERIOR
+
+            if (partidaId !== null) {
+
+                let respuesta = await fetch(
+                    "/inicio-juego/api/partidas/" +
+                    partidaId + "/abandonar/",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "X-CSRFToken": "{{ csrf_token }}"
+                        }
+                    }
+                );
+
+                if (!respuesta.ok || respuesta.redirected) {
+
+                    alert("No se pudo cerrar la partida anterior");
+
+                    return;
+                }
+
+                partidaId = null;
+            }
+
+
+            // CREAR LA NUEVA PARTIDA
+
+            let creada = await crearPartida(nivel);
+
+            if (!creada) {
+                return;
+            }
+
+            banderaActiva = false;
+
+            document.getElementById("modoBandera").textContent =
+                "⚑ Modo bandera";
+
+            document.getElementById("nivel").textContent =
+                nombre;
+
+            document.getElementById("minas").textContent =
+                minas;
+
+            document.getElementById("tiempo").textContent =
+                tiempo;
+
+            document.getElementById("banderas").textContent =
+                0;
+
+            document.getElementById("movimientos").textContent =
+                0;
+
+            document.getElementById("transcurrido").textContent =
+                "00:00";
+
+            document.getElementById("progreso").textContent =
+                "0 / " + (cantidad * cantidad - minas);
+
+
+            // RESALTAR EL NIVEL SELECCIONADO
+
+            document.querySelectorAll(".nivel").forEach(function(elemento) {
+
+                elemento.classList.remove("activo");
+
+            });
+
+            boton.classList.add("activo");
+
+
+            // GENERAR EL TABLERO
+
+            let tablero = document.getElementById("tablero");
+
+            tablero.innerHTML = "";
+
+            tablero.style.gridTemplateColumns =
+                "repeat(" + cantidad + ", minmax(0, 1fr))";
+
+            for (let i = 0; i < cantidad * cantidad; i++) {
+
+                let casilla = document.createElement("button");
+
+                casilla.className = "casilla";
+
+                casilla.type = "button";
+
+                casilla.onclick = function() {
+
+                    presionar(casilla);
+
+                };
+
+                tablero.appendChild(casilla);
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Error al crear la partida");
+
+        } finally {
+
+            enviando = false;
+
+        }
+    }
+
+
+    // NUEVA PARTIDA
+
+    function nuevaPartida() {
+
+        let boton = document.querySelector(".nivel.activo");
+
+        if (boton) {
+            boton.click();
+        }
+
+    }
+
+
+    // ACTIVAR Y DESACTIVAR BANDERAS
+
+    function activarBandera() {
+
+        banderaActiva = !banderaActiva;
+
+        document.getElementById("modoBandera").textContent =
+            banderaActiva ? "⚑ Bandera activada" : "⚑ Modo bandera";
+
+    }
+
+
+    // PRESIONAR UNA CASILLA
+
+    async function presionar(casilla) {
+
+        if (enviando) {
+            return;
+        }
+
+        enviando = true;
+
+        try {
+
+            if (partidaId === null) {
+
+                let creada = await crearPartida("FACIL");
+
+                if (!creada) {
+                    return;
+                }
+
+            }
+
+            let casillas = Array.from(
+                document.querySelectorAll(".casilla")
+            );
+
+            let cantidad = Math.sqrt(casillas.length);
+
+            let posicion = casillas.indexOf(casilla);
+
+            let fila = Math.floor(posicion / cantidad);
+
+            let columna = posicion % cantidad;
+
+            let numero = Number(
+                document.getElementById("movimientos").textContent
+            ) + 1;
+
+
+            let respuesta = await fetch(
+                "/inicio-juego/api/partidas/" +
+                partidaId + "/accion/",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+
+                    body: JSON.stringify({
+
+                        numero: numero,
+
+                        tipo: banderaActiva ? "BANDERA" : "DESCUBRIR",
+
+                        f: fila,
+
+                        c: columna
+
+                    })
+                }
+            );
+
+            let datos = await respuesta.json();
+
+            if (datos.tablero) {
+
+                actualizarTablero(datos);
+
+                if (datos.estado !== "EN_CURSO") {
+                    partidaId = null;
+                }
+
+            }
+
+            if (!respuesta.ok) {
+
+                alert(datos.error || "Error en el movimiento");
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Error al realizar el movimiento");
+
+        } finally {
+
+            enviando = false;
+
+        }
+    }
+
+
+    // ACTUALIZAR LAS CASILLAS DEL TABLERO
+
+    function actualizarTablero(datos) {
+
+        let casillas = document.querySelectorAll(".casilla");
+
+        let cantidad = datos.tablero.length;
+
+        let colores = [
+            "",
+            "#1659c5",
+            "#16852b",
+            "#d62626",
+            "#5729a8",
+            "#932323",
+            "#008b8b",
+            "#111111",
+            "#555555"
+        ];
+
+        for (let f = 0; f < cantidad; f++) {
+
+            for (let c = 0; c < cantidad; c++) {
+
+                let casilla = casillas[f * cantidad + c];
+
+                let valor = datos.tablero[f][c];
+
+                casilla.textContent = "";
+
+                casilla.style.color = "";
+
+                casilla.classList.remove("descubierta");
+
+
+                if (valor === "B") {
+
+                    casilla.textContent = "🚩";
+
+                } else if (valor === -1) {
+
+                    casilla.textContent = "💣";
+
+                    casilla.classList.add("descubierta");
+
+                } else if (valor !== null) {
+
+                    casilla.classList.add("descubierta");
+
+                    if (valor !== 0) {
+
+                        casilla.textContent = valor;
+
+                        casilla.style.color = colores[valor];
+
+                    }
+
+                }
+
+                casilla.disabled = (
+                    datos.estado !== "EN_CURSO"
+                    || typeof valor === "number"
+                );
+
+            }
+
+        }
+
+
+        // ACTUALIZAR INDICADORES
+
+        document.getElementById("banderas").textContent =
+            datos.banderas;
+
+        document.getElementById("movimientos").textContent =
+            datos.movimientos;
+
+        let minas = Number(
+            document.getElementById("minas").textContent
+        );
+
+        document.getElementById("progreso").textContent =
+            datos.descubiertas + " / " +
+            (cantidad * cantidad - minas);
+
+        document.querySelector(".estado").textContent =
+            datos.estado.replaceAll("_", " ");
+
+
+        // ACTUALIZAR TIEMPO RESTANTE
+
+        let minutos = Math.floor(datos.segundos_restantes / 60);
+
+        let segundos = datos.segundos_restantes % 60;
+
+        document.getElementById("tiempo").textContent =
+            String(minutos).padStart(2, "0") + ":" +
+            String(segundos).padStart(2, "0");
+
+
+        // ACTUALIZAR TIEMPO TRANSCURRIDO
+
+        let transcurrido = Math.max(
+            0, tiempoInicial - datos.segundos_restantes
+        );
+
+        let minutosT = Math.floor(transcurrido / 60);
+
+        let segundosT = transcurrido % 60;
+
+        document.getElementById("transcurrido").textContent =
+            String(minutosT).padStart(2, "0") + ":" +
+            String(segundosT).padStart(2, "0");
+
+
+        // RESULTADO DE LA PARTIDA
+
+        if (datos.estado === "GANADA") {
+
+            alert("¡Ganaste! Puntaje: " + datos.puntaje);
+
+        }
+
+        if (datos.estado === "PERDIDA") {
+
+            alert("¡Perdiste! Encontraste una mina.");
+
+        }
+
+        if (datos.estado === "TIEMPO_AGOTADO") {
+
+            alert("Se terminó el tiempo.");
+
+        }
+
+    }
+
+
+    // TEMPORIZADOR AUTOMATICO
+
+    setInterval(async function() {
+
+        if (partidaId === null || enviando) {
+            return;
+        }
+
+        try {
+
+            let consultada = partidaId;
+
+            let respuesta = await fetch(
+                "/inicio-juego/api/partidas/" +
+                consultada + "/estado/"
+            );
+
+            if (!respuesta.ok || respuesta.redirected) {
+                return;
+            }
+
+            let datos = await respuesta.json();
+
+            if (enviando || partidaId !== consultada) {
+                return;
+            }
+
+            let minutos = Math.floor(datos.segundos_restantes / 60);
+
+            let segundos = datos.segundos_restantes % 60;
+
+            document.getElementById("tiempo").textContent =
+                String(minutos).padStart(2, "0") + ":" +
+                String(segundos).padStart(2, "0");
+
+            let transcurrido = Math.max(
+                0, tiempoInicial - datos.segundos_restantes
+            );
+
+            document.getElementById("transcurrido").textContent =
+                String(Math.floor(transcurrido / 60)).padStart(2, "0") +
+                ":" +
+                String(transcurrido % 60).padStart(2, "0");
+
+            if (datos.estado !== "EN_CURSO") {
+
+                actualizarTablero(datos);
+
+                partidaId = null;
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    }, 1000);
+
+
+    // ABANDONAR PARTIDA
+
+    async function abandonar() {
+
+        if (enviando) {
+            return;
+        }
+
+        if (!confirm("¿Deseas abandonar la partida?")) {
+            return;
+        }
+
+        enviando = true;
+
+        try {
+
+            if (partidaId !== null) {
+
+                let respuesta = await fetch(
+                    "/inicio-juego/api/partidas/" +
+                    partidaId + "/abandonar/",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "X-CSRFToken": "{{ csrf_token }}"
+                        }
+                    }
+                );
+
+                if (!respuesta.ok || respuesta.redirected) {
+
+                    alert("No se pudo abandonar la partida");
+
+                    return;
+
+                }
+
+                partidaId = null;
+            }
+
+            window.location.href = "{% url 'inicio_juego' %}";
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Error al abandonar la partida");
+
+        } finally {
+
+            enviando = false;
+
+        }
+    }
+
+</script>
+
+{% endblock %}
