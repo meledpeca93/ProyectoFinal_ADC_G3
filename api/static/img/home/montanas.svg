@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <radialGradient id="cresta-luz" cx="56%" cy="55%" r="36%">
+      <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.72"/>
+      <stop offset="35%" stop-color="#0ea5e9" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#0a2742" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mtn-fondo" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#194266" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#081a2d" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="mtn-media" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#153756" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#071628" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="mtn-frente" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f2842" stop-opacity="0.96"/>
+      <stop offset="100%" stop-color="#071323" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="cresta-brillo" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e4970" stop-opacity="0.1"/>
+      <stop offset="52%" stop-color="#38bdf8" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#1e4970" stop-opacity="0.15"/>
+    </linearGradient>
+  </defs>
+
+  <ellipse cx="452" cy="185" rx="220" ry="120" fill="url(#cresta-luz)"/>
+
+  <!-- Cordillera lejana -->
+  <polygon points="0,255 95,188 188,236 310,162 430,210 568,125 690,178 800,115 800,320 0,320" fill="url(#mtn-fondo)"/>
+  <polygon points="568,125 490,235 615,215 690,178" fill="#0d2a45" opacity="0.78"/>
+
+  <!-- Cordillera intermedia con aristas iluminadas -->
+  <polygon points="0,272 135,208 242,262 380,172 470,212 608,162 722,226 800,192 800,320 0,320" fill="url(#mtn-media)"/>
+  <polygon points="380,172 325,270 430,255 470,212" fill="#0a2036" opacity="0.82"/>
+  <polyline points="242,262 380,172 470,212 608,162" fill="none" stroke="url(#cresta-brillo)" stroke-width="2"/>
+
+  <!-- Cordillera frontal -->
+  <polygon points="0,295 165,248 295,286 445,218 552,272 688,224 800,276 800,320 0,320" fill="url(#mtn-frente)"/>
+  <polygon points="445,218 408,295 512,286 552,272" fill="#061221" opacity="0.85"/>
+  <polyline points="295,286 445,218 552,272" fill="none" stroke="#22a6e0" stroke-opacity="0.45" stroke-width="1.8"/>
+</svg>

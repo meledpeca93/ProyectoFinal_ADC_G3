@@ -3,6 +3,7 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import redirect, render
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
 
@@ -13,8 +14,13 @@ from .models import PerfilJugador
 @never_cache
 @require_http_methods(["GET", "HEAD", "POST"])
 def registro(request):
+    destino = request.POST.get("next") or request.GET.get("next", "")
+    if not url_has_allowed_host_and_scheme(
+        destino, allowed_hosts={request.get_host()}, require_https=request.is_secure(),
+    ):
+        destino = ""
     if request.user.is_authenticated:
-        return redirect("perfil")
+        return redirect(destino or "perfil")
 
     form = RegistroForm(request.POST if request.method == "POST" else None)
     if request.method == "POST" and form.is_valid():
@@ -22,8 +28,8 @@ def registro(request):
             usuario = form.save()
             PerfilJugador.objects.create(user=usuario)
         login(request, usuario)
-        return redirect("perfil")
-    return render(request, "cuentas/registro.html", {"form": form})
+        return redirect(destino or "perfil")
+    return render(request, "cuentas/registro.html", {"form": form, "next": destino})
 
 
 @never_cache

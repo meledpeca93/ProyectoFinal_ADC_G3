@@ -1,5 +1,4 @@
 .env
-/compose.override.yaml
 .venv/
 __pycache__/
 *.py[cod]

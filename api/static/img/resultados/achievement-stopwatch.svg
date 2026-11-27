@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 72">
+  <defs>
+    <linearGradient id="hex-oro-s" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff4ad"/>
+      <stop offset="45%" stop-color="#ffcb2f"/>
+      <stop offset="100%" stop-color="#c97207"/>
+    </linearGradient>
+    <radialGradient id="hex-fondo-s" cx="38%" cy="28%" r="72%">
+      <stop offset="0%" stop-color="#5a3b08"/>
+      <stop offset="58%" stop-color="#221708"/>
+      <stop offset="100%" stop-color="#0d0a06"/>
+    </radialGradient>
+  </defs>
+  <polygon points="32,2 60,18 60,54 32,70 4,54 4,18" fill="url(#hex-oro-s)"/>
+  <polygon points="32,6 56,20 56,52 32,66 8,52 8,20" fill="url(#hex-fondo-s)" stroke="#ffd65a" stroke-opacity="0.35" stroke-width="1"/>
+  <g fill="none" stroke="#ffdf64" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M27 17 H37"/>
+    <path d="M32 17 V22"/>
+    <path d="M43 24 L46 21"/>
+    <circle cx="32" cy="38" r="14"/>
+    <path d="M32 30 V39 L38 42"/>
+  </g>
+</svg>

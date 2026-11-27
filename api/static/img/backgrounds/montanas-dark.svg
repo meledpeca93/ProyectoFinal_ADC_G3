@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="mtn-a" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2c4b6e" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#0a1628" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="mtn-b" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1b324e" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#071222" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="mtn-c" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#13253c" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#060f1d" stop-opacity="1"/>
+    </linearGradient>
+  </defs>
+  <polygon points="0,152 46,104 94,142 206,52 288,108 320,86 320,200 0,200" fill="url(#mtn-a)"/>
+  <polygon points="206,52 168,144 226,120 288,108" fill="#172c46" opacity="0.65"/>
+  <polygon points="0,162 46,104 68,158 128,128 190,174 260,122 320,160 320,200 0,200" fill="url(#mtn-b)"/>
+  <polygon points="0,182 88,136 154,174 238,142 320,182 320,200 0,200" fill="url(#mtn-c)"/>
+</svg>

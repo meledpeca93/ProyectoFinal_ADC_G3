@@ -1,138 +1,332 @@
-
 {% extends "base.html" %}
-
-{% block title %}Resultado | Buscaminas{% endblock %}
+{% load static %}
+{% block title %}{{ titulo }} | Buscaminas{% endblock %}
+{% block extra_head %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:ital,wght@0,700;0,800;1,800&display=swap">
+  <link rel="stylesheet" href="{% static 'css/resultado.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="bm-pagina bm-resultado">
+<div class="resultado resultado--{{ estado|lower }}">
+  {% include "juego/resultado_iconos.html" %}
 
-  <header class="bm-cabecera">
-    <a class="bm-marca" href="{% url 'inicio_juego' %}">
-      💣 BUSCAMINAS
+  <header class="resultado__cabecera">
+    <a class="resultado__marca" href="{{ rutas.inicio }}">
+      <span class="resultado__mina" aria-hidden="true"></span>
+      <span>
+        <strong>BUSCAMINAS</strong>
+        <small>Proyecto 3 · Arquitectura de Computadoras</small>
+      </span>
     </a>
 
-    <nav class="bm-navegacion" aria-label="Navegación principal">
-      <a href="{% url 'inicio_juego' %}">Inicio</a>
-      <a href="{% url 'inicio_juego' %}">Volver al juego</a>
+    <div class="resultado__divisor-cabecera" aria-hidden="true"></div>
+
+    <nav class="resultado__nav" aria-label="Navegación principal">
+      <a href="{{ rutas.inicio }}" class="resultado__nav-activa">
+        {% include "juego/resultado_icono.html" with icono="casa" %}
+        <span>Inicio</span>
+      </a>
+      <a href="{{ rutas.como_jugar }}">
+        {% include "juego/resultado_icono.html" with icono="ayuda" %}
+        <span>Cómo jugar</span>
+      </a>
+      <a href="{{ rutas.clasificacion }}">
+        {% include "juego/resultado_icono.html" with icono="trofeo" %}
+        <span>Clasificación</span>
+      </a>
+      <a href="{{ rutas.perfil }}">
+        {% include "juego/resultado_icono.html" with icono="usuario" %}
+        <span>Mi perfil</span>
+      </a>
     </nav>
+
+    <div class="resultado__divisor-cabecera" aria-hidden="true"></div>
+
+    {% if request.user.is_authenticated %}
+      <details class="resultado__cuenta">
+        <summary>
+          <span class="resultado__avatar" aria-hidden="true">
+            {% include "juego/resultado_icono.html" with icono="usuario" %}
+          </span>
+          <span class="resultado__usuario-nombre">{{ nombre_jugador }}</span>
+          <span class="resultado__chevron" aria-hidden="true">
+            {% include "juego/resultado_icono.html" with icono="chevron" %}
+          </span>
+        </summary>
+        <div class="resultado__menu">
+          <a href="{{ rutas.perfil }}">Mi perfil</a>
+          <a href="{{ rutas.historial }}">Historial</a>
+          <form method="post" action="{% url 'cuentas:logout' %}">
+            {% csrf_token %}
+            <button type="submit">Cerrar sesión</button>
+          </form>
+        </div>
+      </details>
+    {% else %}
+      <a class="resultado__acceso" href="{% url 'cuentas:login' %}">
+        <span class="resultado__avatar" aria-hidden="true">
+          {% include "juego/resultado_icono.html" with icono="usuario" %}
+        </span>
+        <span>Iniciar sesión</span>
+      </a>
+    {% endif %}
   </header>
 
-  <div class="bm-contenedor">
-
-    <section class="bm-tarjeta"
-             aria-labelledby="titulo-resultado"
-             style="margin-block: 2rem; text-align: center;">
-
-      <p style="color: var(--bm-dorado); font-weight: 700;">
-        RESULTADO DE LA PARTIDA
-      </p>
-
-      {% if estado == "GANADA" %}
-        <h1 class="bm-titulo" id="titulo-resultado">
-          🏆 ¡Victoria!
-        </h1>
-        <p class="bm-descripcion">
-          ¡Felicidades! Has descubierto todas las casillas seguras.
-        </p>
-
-      {% elif estado == "PERDIDA" %}
-        <h1 class="bm-titulo" id="titulo-resultado">
-          💣 Partida perdida
-        </h1>
-        <p class="bm-descripcion">
-          Encontraste una mina. ¡Inténtalo nuevamente!
-        </p>
-
-      {% elif estado == "TIEMPO_AGOTADO" %}
-        <h1 class="bm-titulo" id="titulo-resultado">
-          ⏰ Tiempo agotado
-        </h1>
-        <p class="bm-descripcion">
-          Se terminó el tiempo disponible para completar el tablero.
-        </p>
-
-      {% elif estado == "ABANDONADA" %}
-        <h1 class="bm-titulo" id="titulo-resultado">
-          🚪 Partida abandonada
-        </h1>
-        <p class="bm-descripcion">
-          Has salido de la partida antes de finalizarla.
-        </p>
-
-      {% else %}
-        <h1 class="bm-titulo" id="titulo-resultado">
-          Resultado no disponible
-        </h1>
-        <p class="bm-descripcion">
-          No se pudo determinar el estado de esta partida.
-        </p>
-      {% endif %}
-
-    </section>
-
-    <section class="bm-cuadricula"
-             aria-label="Estadísticas de la partida"
-             style="margin-bottom: 2rem;">
-
-      <article class="bm-tarjeta">
-        <h2>⭐ Puntuación</h2>
-        <p class="bm-descripcion">
-          {{ puntuacion|default_if_none:"No disponible" }}
-        </p>
-      </article>
-
-      <article class="bm-tarjeta">
-        <h2>⏱️ Duración</h2>
-        <p class="bm-descripcion">
-          {{ duracion|default_if_none:"No disponible" }}
-        </p>
-      </article>
-
-      <article class="bm-tarjeta">
-        <h2>🎯 Dificultad</h2>
-        <p class="bm-descripcion">
-          {{ dificultad|default_if_none:"No disponible" }}
-        </p>
-      </article>
-
-    </section>
-
-    <section class="bm-tarjeta"
-             aria-labelledby="titulo-estadisticas"
-             style="margin-bottom: 2rem;">
-
-      <h2 id="titulo-estadisticas">
-        📊 Estadísticas de la partida
+  <div class="resultado__reparto">
+    <nav class="resultado__lateral resultado__panel" aria-label="Secciones del resultado">
+      <h2 class="resultado__lateral-titulo">
+        {% include "juego/resultado_icono.html" with icono="mando" %}
+        <span>Resultado <br>de la partida</span>
       </h2>
+      <a class="resultado__lateral-activa" href="#desenlace">
+        {% include "juego/resultado_icono.html" with icono=icono_estado %}
+        <span>{{ titulo }}</span>
+        <span class="resultado__lateral-check" aria-hidden="true">
+          {% include "juego/resultado_icono.html" with icono="check-relleno" %}
+        </span>
+      </a>
+      <a href="#resumen">
+        {% include "juego/resultado_icono.html" with icono="grafico" %}
+        <span>Resumen</span>
+      </a>
+      <a href="#logros">
+        {% include "juego/resultado_icono.html" with icono="medalla" %}
+        <span>Logros obtenidos</span>
+      </a>
+      <a href="#comparativa">
+        {% include "juego/resultado_icono.html" with icono="tendencia" %}
+        <span>Comparativa</span>
+      </a>
+    </nav>
 
-      <p class="bm-descripcion">
-        Casillas descubiertas:
-        {{ casillas_descubiertas|default_if_none:"No disponible" }}
-      </p>
+    <section class="resultado__principal resultado__panel" aria-labelledby="titulo-resultado">
+      <header class="resultado__desenlace" id="desenlace">
+        <div class="resultado__emblema">
+          {% if estado == "GANADA" %}
+            <svg class="resultado__particulas" viewBox="0 0 460 170" aria-hidden="true">
+              <g class="particula particula--a">
+                <rect x="52" y="88" width="9" height="5" rx="1.2" transform="rotate(-24 56 90)"/>
+                <polygon points="94,42 98,47 94,52 90,47"/>
+                <rect x="366" y="45" width="9" height="5" rx="1.2" transform="rotate(28 370 47)"/>
+                <polygon points="402,92 406,97 402,102 398,97"/>
+              </g>
+              <g class="particula particula--b">
+                <rect x="28" y="138" width="7" height="4" rx="1" transform="rotate(-18 31 140)"/>
+                <polygon points="122,126 125,130 122,134 119,130"/>
+                <rect x="336" y="128" width="7" height="4" rx="1" transform="rotate(22 339 130)"/>
+                <polygon points="424,136 427,140 424,144 421,140"/>
+              </g>
+              <g class="particula particula--c">
+                <circle cx="75" cy="112" r="2.3"/>
+                <circle cx="110" cy="64" r="2"/>
+                <circle cx="350" cy="68" r="2"/>
+                <circle cx="386" cy="116" r="2.3"/>
+              </g>
+            </svg>
+            <img class="resultado__trofeo" src="{% static 'img/resultados/trofeo-victoria.svg' %}" width="360" height="170" alt="">
+          {% else %}
+            <div class="resultado__trofeo-estado" aria-hidden="true">
+              {% include "juego/resultado_icono.html" with icono=icono_estado %}
+            </div>
+          {% endif %}
+        </div>
 
-      <p class="bm-descripcion">
-        Banderas colocadas:
-        {{ banderas_colocadas|default_if_none:"No disponible" }}
-      </p>
+        <h1 id="titulo-resultado">{{ titulo }}</h1>
+        {% if es_demo %}<p class="resultado__demo">Demostración · Datos de ejemplo</p>{% endif %}
+        <p class="resultado__subtitulo">
+          {% if estado == "GANADA" %}
+            <span class="resultado__destello-inline" aria-hidden="true">
+              {% include "juego/resultado_icono.html" with icono="destello" %}
+            </span>
+          {% endif %}
+          <span>{{ mensaje }}{% if mensaje_enfasis %} <em>{{ mensaje_enfasis }}</em>{% endif %}</span>
+        </p>
+      </header>
 
-      <p class="bm-descripcion">
-        Minas totales:
-        {{ minas_totales|default_if_none:"No disponible" }}
-      </p>
+      <div class="resultado__resumen" id="resumen">
+        <section class="resultado__tablero-caja" aria-labelledby="titulo-tablero-final">
+          <h2 id="titulo-tablero-final" class="sr-only">Tablero final</h2>
+          <div class="tablero-final"
+               style="--cols: {{ columnas }}; --filas: {{ filas }};"
+               role="grid"
+               aria-label="Tablero final de {{ filas }} por {{ columnas }}">
+            {% for fila_celdas in tablero_matriz %}
+              {% for celda in fila_celdas %}
+                <span class="celda celda--{{ celda.tipo }}{% if celda.numero %} celda--n{{ celda.numero }}{% endif %}"
+                      role="gridcell"
+                      aria-label="{% if celda.tipo == 'descubierta' %}{% if celda.numero %}{{ celda.numero }}{% else %}Vacía{% endif %}{% elif celda.tipo == 'bandera' or celda.tipo == 'bandera-error' %}Bandera{% elif celda.tipo == 'mina' or celda.tipo == 'mina-explotada' %}Mina{% else %}Oculta{% endif %}">
+                  {% if celda.tipo == "descubierta" and celda.numero %}
+                    {{ celda.numero }}
+                  {% elif celda.tipo == "bandera" or celda.tipo == "bandera-error" %}
+                    {% include "juego/resultado_icono.html" with icono="bandera" %}
+                  {% elif celda.tipo == "mina" or celda.tipo == "mina-explotada" %}
+                    {% include "juego/resultado_icono.html" with icono="mina" %}
+                  {% endif %}
+                </span>
+              {% endfor %}
+            {% endfor %}
+          </div>
+        </section>
 
+        <div class="resultado__datos">
+          <dl class="resultado__metricas resultado__panel">
+            <div>
+              <dt>{% include "juego/resultado_icono.html" with icono="nivel" %}<span>Nivel</span></dt>
+              <dd class="metrica--nivel">{{ nivel_nombre }}</dd>
+            </div>
+            <div>
+              <dt>{% include "juego/resultado_icono.html" with icono="reloj" %}<span>Tiempo</span></dt>
+              <dd>{{ tiempo_formateado }}</dd>
+            </div>
+            <div>
+              <dt>{% include "juego/resultado_icono.html" with icono="movimientos" %}<span>Movimientos</span></dt>
+              <dd>{{ movimientos }}</dd>
+            </div>
+            <div>
+              <dt class="metrica--bandera">{% include "juego/resultado_icono.html" with icono="bandera" %}<span>Banderas</span></dt>
+              <dd>{{ banderas }}</dd>
+            </div>
+            <div>
+              <dt>{% include "juego/resultado_icono.html" with icono="tablero" %}<span>Casillas seguras<br>descubiertas</span></dt>
+              <dd>{{ seguras_descubiertas }} / {{ seguras_total }}</dd>
+            </div>
+          </dl>
+
+          <div class="resultado__puntaje">
+            {% include "juego/resultado_icono.html" with icono="trofeo" %}
+            <strong>Puntaje final</strong>
+            <span>{{ puntaje_final }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="resultado__acciones">
+        <a class="resultado__accion-principal" href="{% if request.user.is_authenticated %}{{ rutas.nueva_partida }}{% else %}{% url 'cuentas:login' %}{% endif %}">
+          {% include "juego/resultado_icono.html" with icono="mando" %}
+          <span>Nueva partida</span>
+        </a>
+        <a href="{{ rutas.historial }}">
+          {% include "juego/resultado_icono.html" with icono="lista" %}
+          <span>Ver historial</span>
+        </a>
+        <a href="{{ rutas.clasificacion }}">
+          {% include "juego/resultado_icono.html" with icono="trofeo" %}
+          <span>Ir a clasificación</span>
+        </a>
+      </div>
     </section>
 
-    <div style="text-align: center; padding-bottom: 2rem;">
-      <a class="bm-boton" href="{% url 'inicio_juego' %}">
-        Volver al inicio
-      </a>
-    </div>
+    <aside class="resultado__derecha" aria-label="Progreso personal">
+      <section class="resultado__panel resultado__logros" id="logros">
+        <h2>
+          {% include "juego/resultado_icono.html" with icono="medalla" %}
+          <span>Tus logros</span>
+        </h2>
+        <ul>
+          {% for logro in logros %}
+            <li class="logro-item {% if logro.cumplido %}logro-item--cumplido{% else %}logro-item--pendiente{% endif %}">
+              <img class="logro-item__insignia"
+                   src="{% static logro.svg %}"
+                   width="50"
+                   height="56"
+                   alt="">
+              <div class="logro-item__texto">
+                <strong>{{ logro.titulo }}</strong>
+                <p>{{ logro.descripcion }}</p>
+              </div>
+              <span class="logro-item__estado" aria-label="{% if logro.cumplido %}Obtenido{% else %}No obtenido{% endif %}">
+                {% if logro.cumplido %}
+                  {% include "juego/resultado_icono.html" with icono="check-relleno" %}
+                {% else %}
+                  {% include "juego/resultado_icono.html" with icono="candado" %}
+                {% endif %}
+              </span>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
 
+      <section class="resultado__panel resultado__comparativa" id="comparativa">
+        <h2>
+          {% include "juego/resultado_icono.html" with icono="grafico" %}
+          <span>Comparativa personal</span>
+        </h2>
+
+        <div class="comparativa__cuerpo">
+          <div class="comparativa__tarjetas">
+            <div class="comparativa__bloque">
+              <span class="comparativa__etiqueta">Tu mejor puntaje<br>({{ nivel_nombre }})</span>
+              <strong class="comparativa__cifra">{% if comparativa.tiene_previo %}{{ comparativa.previo_puntaje }}{% else %}—{% endif %}</strong>
+              <div class="comparativa__detalles">
+                <span>{% include "juego/resultado_icono.html" with icono="reloj" %} {{ comparativa.previo_tiempo }}</span>
+                <span>{% include "juego/resultado_icono.html" with icono="movimientos" %} {{ comparativa.previo_movimientos }}</span>
+              </div>
+            </div>
+
+            <div class="comparativa__indicador" aria-hidden="true">
+              {% if comparativa.es_nuevo_record %}
+                <span class="comparativa__flecha">
+                  {% include "juego/resultado_icono.html" with icono="flecha-sube" %}
+                </span>
+              {% endif %}
+            </div>
+
+            <div class="comparativa__bloque comparativa__bloque--actual">
+              {% if estado == "GANADA" %}
+                <span class="comparativa__trofeo-esquina" aria-hidden="true">
+                  {% include "juego/resultado_icono.html" with icono="trofeo" %}
+                </span>
+              {% endif %}
+              <span class="comparativa__etiqueta">Puntaje actual</span>
+              <strong class="comparativa__cifra comparativa__cifra--dorada">{{ comparativa.actual_puntaje }}</strong>
+              <div class="comparativa__detalles">
+                <span>{% include "juego/resultado_icono.html" with icono="reloj" %} {{ comparativa.actual_tiempo }}</span>
+                <span>{% include "juego/resultado_icono.html" with icono="movimientos" %} {{ comparativa.actual_movimientos }}</span>
+              </div>
+            </div>
+          </div>
+
+          {% if comparativa.es_nuevo_record %}
+            <div class="comparativa__record comparativa__record--nuevo">
+              <span class="comparativa__estrella" aria-hidden="true">
+                {% include "juego/resultado_icono.html" with icono="estrella" %}
+              </span>
+              <div>
+                <strong>¡Nuevo mejor puntaje personal!</strong>
+                <p>
+                  {% if comparativa.tiene_previo %}
+                    Mejoraste tu récord anterior por +{{ comparativa.diferencia_record }} puntos.
+                  {% else %}
+                    Estrenaste tu récord personal en nivel {{ nivel_nombre }}.
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+          {% else %}
+            <div class="comparativa__record comparativa__record--normal">
+              <div>
+                <strong>
+                  {% if estado == "GANADA" %}
+                    Récord personal vigente
+                  {% else %}
+                    Sin actualización de récord
+                  {% endif %}
+                </strong>
+                <p>
+                  {% if estado == "GANADA" and comparativa.tiene_previo %}
+                    Tu mejor marca en {{ nivel_nombre }} sigue siendo {{ comparativa.previo_puntaje }} puntos.
+                  {% else %}
+                    Solo las partidas ganadas suman puntaje y actualizan tu mejor marca.
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </section>
+    </aside>
   </div>
-
-  <footer class="bm-pie">
-    Buscaminas · Proyecto Final · Grupo 3
-  </footer>
-
 </div>
 {% endblock %}

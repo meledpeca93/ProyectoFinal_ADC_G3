@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+  <defs>
+    <radialGradient id="mina-cuerpo" cx="34%" cy="28%" r="72%">
+      <stop offset="0%" stop-color="#4e6c90"/>
+      <stop offset="45%" stop-color="#172b45"/>
+      <stop offset="100%" stop-color="#070e18"/>
+    </radialGradient>
+    <linearGradient id="mina-oro" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff6b8"/>
+      <stop offset="40%" stop-color="#ffd23f"/>
+      <stop offset="80%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#c97204"/>
+    </linearGradient>
+    <radialGradient id="mina-brillo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffcf40" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#ffcf40" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="40" cy="40" r="39" fill="url(#mina-brillo)"/>
+  <g fill="url(#mina-oro)">
+    <rect id="punta-mina" x="35.5" y="3" width="9" height="14" rx="4.5"/>
+    <use href="#punta-mina" transform="rotate(45 40 40)"/>
+    <use href="#punta-mina" transform="rotate(90 40 40)"/>
+    <use href="#punta-mina" transform="rotate(135 40 40)"/>
+    <use href="#punta-mina" transform="rotate(180 40 40)"/>
+    <use href="#punta-mina" transform="rotate(225 40 40)"/>
+    <use href="#punta-mina" transform="rotate(270 40 40)"/>
+    <use href="#punta-mina" transform="rotate(315 40 40)"/>
+    <circle cx="40" cy="40" r="29"/>
+  </g>
+  <circle cx="40" cy="40" r="25.2" fill="url(#mina-cuerpo)"/>
+  <ellipse cx="32" cy="27" rx="8" ry="5" fill="#7aa0c9" opacity="0.22" transform="rotate(-28 32 27)"/>
+  <circle cx="29" cy="25" r="4.6" fill="#0b1624" stroke="#2d4868" stroke-width="1.2"/>
+  <circle cx="50" cy="34" r="4.2" fill="#213853" stroke="#365578" stroke-width="1"/>
+  <circle cx="29" cy="47" r="4.8" fill="#09111d" stroke="#1e334d" stroke-width="1"/>
+  <circle cx="47" cy="54" r="5.4" fill="url(#mina-oro)"/>
+</svg>

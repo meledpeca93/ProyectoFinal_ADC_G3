@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 170">
+  <defs>
+    <radialGradient id="trofeo-halo" cx="50%" cy="52%" r="50%">
+      <stop offset="0%" stop-color="#ffd54a" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#f59e0b" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="copa-oro" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a85503"/>
+      <stop offset="18%" stop-color="#f6a80a"/>
+      <stop offset="36%" stop-color="#fff4b2"/>
+      <stop offset="52%" stop-color="#ffcf33"/>
+      <stop offset="76%" stop-color="#e58c06"/>
+      <stop offset="92%" stop-color="#ffd64f"/>
+      <stop offset="100%" stop-color="#9e4e03"/>
+    </linearGradient>
+    <linearGradient id="oro-vertical" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff8c9"/>
+      <stop offset="35%" stop-color="#ffd23f"/>
+      <stop offset="75%" stop-color="#f09708"/>
+      <stop offset="100%" stop-color="#9b4b03"/>
+    </linearGradient>
+    <linearGradient id="base-oro" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe787"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#9a4b03"/>
+    </linearGradient>
+    <linearGradient id="laurel-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff19d"/>
+      <stop offset="50%" stop-color="#ffc326"/>
+      <stop offset="100%" stop-color="#c47206"/>
+    </linearGradient>
+    <g id="rama-laurel">
+      <path d="M128 139 Q82 126 70 72" fill="none" stroke="url(#laurel-grad)" stroke-width="2.4" stroke-linecap="round"/>
+      <!-- Hojas exteriores -->
+      <path fill="url(#laurel-grad)" d="M72 74 C60 66, 58 53, 68 47 C75 56, 76 66, 72 74Z"/>
+      <path fill="url(#laurel-grad)" d="M74 91 C59 86, 54 73, 62 65 C71 73, 75 82, 74 91Z"/>
+      <path fill="url(#laurel-grad)" d="M81 107 C64 105, 57 93, 64 84 C74 90, 80 99, 81 107Z"/>
+      <path fill="url(#laurel-grad)" d="M91 121 C74 123, 65 113, 70 103 C81 107, 88 114, 91 121Z"/>
+      <path fill="url(#laurel-grad)" d="M106 132 C90 137, 80 129, 84 119 C95 121, 102 126, 106 132Z"/>
+      <!-- Hojas interiores -->
+      <path fill="url(#laurel-grad)" d="M75 78 C77 65, 86 58, 93 62 C91 71, 83 77, 75 78Z"/>
+      <path fill="url(#laurel-grad)" d="M78 95 C80 82, 89 75, 96 79 C94 88, 86 94, 78 95Z"/>
+      <path fill="url(#laurel-grad)" d="M85 110 C88 97, 97 91, 104 96 C101 105, 93 109, 85 110Z"/>
+      <path fill="url(#laurel-grad)" d="M96 124 C100 112, 110 107, 116 112 C112 121, 104 124, 96 124Z"/>
+    </g>
+  </defs>
+
+  <ellipse cx="180" cy="86" rx="168" ry="80" fill="url(#trofeo-halo)"/>
+
+  <!-- Laureles izquierdo y derecho -->
+  <use href="#rama-laurel"/>
+  <use href="#rama-laurel" transform="translate(360 0) scale(-1 1)"/>
+
+  <!-- Asas laterales con sombra y brillo -->
+  <path d="M128 38 H101 C83 38, 83 63, 98 76 C108 85, 123 89, 134 90" fill="none" stroke="#853d03" stroke-width="11" stroke-linecap="round"/>
+  <path d="M128 36 H101 C83 36, 83 61, 98 74 C108 83, 123 87, 134 88" fill="none" stroke="url(#oro-vertical)" stroke-width="6.5" stroke-linecap="round"/>
+  <path d="M232 38 H259 C277 38, 277 63, 262 76 C252 85, 237 89, 226 90" fill="none" stroke="#853d03" stroke-width="11" stroke-linecap="round"/>
+  <path d="M232 36 H259 C277 36, 277 61, 262 74 C252 83, 237 87, 226 88" fill="none" stroke="url(#oro-vertical)" stroke-width="6.5" stroke-linecap="round"/>
+
+  <!-- Tallo y pedestal -->
+  <path d="M167 110 H193 C187 125, 191 132, 202 137 H158 C169 132, 173 125, 167 110 Z" fill="url(#copa-oro)"/>
+  <ellipse cx="180" cy="113" rx="17" ry="4.5" fill="url(#oro-vertical)" stroke="#ffe98e" stroke-width="1"/>
+  <path d="M150 137 H210 L216 147 H144 Z" fill="url(#base-oro)" stroke="#ffd65a" stroke-width="1.2"/>
+  <rect x="137" y="147" width="86" height="10" rx="2.5" fill="url(#oro-vertical)" stroke="#ffd65a" stroke-width="1.2"/>
+  <rect x="148" y="149.5" width="64" height="2" rx="1" fill="#fff6b8" opacity="0.6"/>
+
+  <!-- Cuerpo principal de la copa -->
+  <path d="M121 28 C121 82, 146 106, 180 113 C214 106, 239 82, 239 28 Z" fill="url(#copa-oro)" stroke="#ffe073" stroke-width="2"/>
+  <!-- Reflejos especulares 3D -->
+  <path d="M133 34 C135 67, 149 91, 169 102 C155 83, 149 60, 148 34 Z" fill="#fff9cf" opacity="0.52"/>
+  <path d="M225 36 C222 65, 211 86, 195 99 C207 82, 214 60, 216 36 Z" fill="#fff4ad" opacity="0.22"/>
+
+  <!-- Borde superior elíptico -->
+  <ellipse cx="180" cy="28" rx="61" ry="8.5" fill="url(#oro-vertical)" stroke="#fff7c8" stroke-width="1.8"/>
+  <ellipse cx="180" cy="28" rx="51" ry="4.5" fill="#9a4e05" opacity="0.55"/>
+
+  <!-- Estrella central en relieve -->
+  <path d="M180 43 L187.5 58.2 L204.2 60.6 L192.1 72.4 L195 89 L180 81.1 L165 89 L167.9 72.4 L155.8 60.6 L172.5 58.2 Z"
+        fill="#b86005" transform="translate(0 2)"/>
+  <path d="M180 43 L187.5 58.2 L204.2 60.6 L192.1 72.4 L195 89 L180 81.1 L165 89 L167.9 72.4 L155.8 60.6 L172.5 58.2 Z"
+        fill="url(#oro-vertical)" stroke="#fffbe0" stroke-width="1.6" stroke-linejoin="round"/>
+</svg>

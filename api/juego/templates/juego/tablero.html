@@ -666,6 +666,7 @@
     let partidaId = null;
     let enviando = false;
     let tiempoInicial = 240;
+    let nivelActivo = "FACIL";
 
 
     // CREAR UNA PARTIDA EN DJANGO
@@ -722,7 +723,7 @@
 
     // CAMBIAR NIVEL DE DIFICULTAD
 
-    async function seleccionarNivel(boton, cantidad, minas, tiempo, nombre) {
+    async function seleccionarNivel(boton, cantidad, minas, tiempo, nombre, iniciar = true) {
 
         if (enviando) {
             return;
@@ -776,12 +777,11 @@
 
             // CREAR LA NUEVA PARTIDA
 
-            let creada = await crearPartida(nivel);
-
-            if (!creada) {
+            if (iniciar && !(await crearPartida(nivel))) {
                 return;
             }
 
+            nivelActivo = nivel;
             banderaActiva = false;
 
             document.getElementById("modoBandera").textContent =
@@ -899,7 +899,7 @@
 
             if (partidaId === null) {
 
-                let creada = await crearPartida("FACIL");
+                let creada = await crearPartida(nivelActivo);
 
                 if (!creada) {
                     return;
@@ -1096,24 +1096,8 @@
             String(segundosT).padStart(2, "0");
 
 
-        // RESULTADO DE LA PARTIDA
-
-        if (datos.estado === "GANADA") {
-
-            alert("¡Ganaste! Puntaje: " + datos.puntaje);
-
-        }
-
-        if (datos.estado === "PERDIDA") {
-
-            alert("¡Perdiste! Encontraste una mina.");
-
-        }
-
-        if (datos.estado === "TIEMPO_AGOTADO") {
-
-            alert("Se terminó el tiempo.");
-
+        if (datos.resultado_url) {
+            window.location.assign(datos.resultado_url);
         }
 
     }
@@ -1218,7 +1202,12 @@
 
                 }
 
+                const datos = await respuesta.json();
                 partidaId = null;
+                if (datos.resultado_url) {
+                    window.location.assign(datos.resultado_url);
+                    return;
+                }
             }
 
             window.location.href = "{% url 'inicio_juego' %}";
@@ -1235,6 +1224,15 @@
 
         }
     }
+
+    const nivelInicial = "{{ nivel_inicial|escapejs }}";
+    const nivelesIniciales = {
+        FACIL: [8, 10, "04:00", "Fácil", 0],
+        NORMAL: [10, 18, "06:00", "Normal", 1],
+        DIFICIL: [12, 30, "08:00", "Difícil", 2],
+    };
+    const [lado, minasIniciales, reloj, nombreNivel, indice] = nivelesIniciales[nivelInicial];
+    seleccionarNivel(document.querySelectorAll(".nivel")[indice], lado, minasIniciales, reloj, nombreNivel, false);
 
 </script>
 

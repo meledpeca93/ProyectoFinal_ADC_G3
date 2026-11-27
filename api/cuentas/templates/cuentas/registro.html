@@ -3,5 +3,5 @@
 {% block titulo_formulario %}Crear cuenta{% endblock %}
 {% block acciones_formulario %}
 <button type="submit" class="portada__entrar"><span aria-hidden="true">＋</span> Crear cuenta</button>
-<p>¿Ya tienes cuenta? <a href="{% url 'cuentas:login' %}" data-cambiar-formulario>Inicia sesión</a></p>
+<p>¿Ya tienes cuenta? <a href="{% url 'cuentas:login' %}{% if next %}?next={{ next|urlencode:'' }}{% endif %}" data-cambiar-formulario>Inicia sesión</a></p>
 {% endblock %}

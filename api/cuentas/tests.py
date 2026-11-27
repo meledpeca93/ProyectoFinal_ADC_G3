@@ -59,16 +59,28 @@ class SesionPerfilTests(TestCase):
         datos["password"] = "Cascada-Azul-42!"
         self.assertRedirects(self.client.post(url, datos), reverse("perfil"))
 
-    def test_portada_muestra_acceso_y_permite_iniciar_sesion(self):
+    def test_portada_enlaza_al_login_para_visitantes(self):
         inicio = reverse("inicio")
+        login = reverse("cuentas:login")
+        tablero = reverse("pantalla_juego") + "?nivel=normal"
         respuesta = self.client.get(inicio)
-        self.assertContains(respuesta, "titulo-acceso")
-        self.assertContains(respuesta, reverse("cuentas:registro"))
-        self.assertRedirects(self.client.post(inicio, {
+        self.assertTemplateUsed(respuesta, "juego/inicio.html")
+        self.assertContains(respuesta, f'href="{login}"')
+        self.assertContains(respuesta, "Jugar ahora")
+        self.assertContains(respuesta, f'href="{tablero}"')
+        acceso = self.client.get(tablero)
+        self.assertEqual(acceso.status_code, 302)
+        self.assertTrue(acceso.url.startswith(login + "?next="))
+        self.assertContains(self.client.get(login), "titulo-acceso")
+        self.assertRedirects(self.client.post(login, {
             "username": "jugador",
             "password": "Cascada-Azul-42!",
-        }), reverse("perfil"))
-        self.assertRedirects(self.client.get(inicio), reverse("perfil"))
+            "next": tablero,
+        }), tablero)
+        respuesta = self.client.get(inicio)
+        self.assertContains(respuesta, f'href="{tablero}"')
+        self.assertContains(respuesta, f'href="{reverse("perfil")}"')
+        self.assertNotContains(respuesta, "Registrarse")
 
     def test_login_y_logout_solo_post_con_csrf(self):
         cliente = Client(enforce_csrf_checks=True)

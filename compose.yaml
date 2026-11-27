@@ -1,5 +1,6 @@
 name: buscaminas_g3
 
+
 services:
   db:
     image: postgres:16
@@ -11,8 +12,11 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    ports:
+      - "127.0.0.1:15432:5432"
     networks:
       - backend
+      - dbeaver_local
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
       interval: 5s
@@ -22,6 +26,7 @@ services:
     cpus: "1.00"
     mem_limit: 512m
     pids_limit: 100
+
 
   api:
     restart: unless-stopped
@@ -63,6 +68,7 @@ services:
     mem_limit: 384m
     pids_limit: 64
 
+
   web:
     restart: unless-stopped
     build:
@@ -91,6 +97,7 @@ networks:
   frontend:
   backend:
     internal: true
+  dbeaver_local:
 
 volumes:
   pgdata:

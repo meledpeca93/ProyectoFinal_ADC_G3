@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 72">
+  <defs>
+    <linearGradient id="hex-oro-l" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff4ad"/>
+      <stop offset="45%" stop-color="#ffcb2f"/>
+      <stop offset="100%" stop-color="#c97207"/>
+    </linearGradient>
+    <radialGradient id="hex-fondo-l" cx="38%" cy="28%" r="72%">
+      <stop offset="0%" stop-color="#5a3b08"/>
+      <stop offset="58%" stop-color="#221708"/>
+      <stop offset="100%" stop-color="#0d0a06"/>
+    </radialGradient>
+    <linearGradient id="rayo-oro" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff8bf"/>
+      <stop offset="55%" stop-color="#ffd23f"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <polygon points="32,2 60,18 60,54 32,70 4,54 4,18" fill="url(#hex-oro-l)"/>
+  <polygon points="32,6 56,20 56,52 32,66 8,52 8,20" fill="url(#hex-fondo-l)" stroke="#ffd65a" stroke-opacity="0.35" stroke-width="1"/>
+  <path d="M35 17 L20 38 H31 L28 55 L44 33 H33 Z" fill="url(#rayo-oro)" stroke="#fff6bc" stroke-width="1.1" stroke-linejoin="round"/>
+</svg>

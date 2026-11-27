@@ -26,7 +26,7 @@ flowchart LR
 | Healthcheck de `api` | `127.0.0.1:8000` dentro de `api` | Gunicorn sirve la misma aplicación en loopback para consultar `/salud/`. |
 | `api` | `db:5432` | Django consulta PostgreSQL por la red backend interna. 5432 es el puerto estándar de PostgreSQL. |
 
-Caddy sirve `/static/` desde el volumen compartido en modo de solo lectura. Los dos usos de 8000 pertenecen a contenedores distintos. Caddy está conectado únicamente a frontend, PostgreSQL únicamente a backend y Django a ambas. Solo Caddy declara una publicación de puerto. Los secretos se leen de `.env` y el proceso Django corre como usuario sin privilegios.
+Caddy sirve `/static/` desde el volumen compartido en modo de solo lectura. Los dos usos de 8000 pertenecen a contenedores distintos. Caddy está conectado a frontend, Django a frontend y backend, y PostgreSQL a backend y a la red dedicada al acceso local de DBeaver. Los secretos se leen de `.env` y el proceso Django corre como usuario sin privilegios.
 
 ### Secuencia de arranque
 
@@ -90,7 +90,7 @@ sequenceDiagram
 
 ### Persistencia y límites iniciales
 
-Para consultar PostgreSQL con DBeaver en el Mac, el archivo local `compose.override.yaml` publica `127.0.0.1:15432 → db:5432` y conecta `db` a una red bridge adicional para ese acceso. Compose carga el archivo automáticamente cuando se ejecuta desde la raíz sin especificar `-f`. El archivo está excluido de Git. En DBeaver se usa `127.0.0.1`, puerto `15432` y las credenciales de la base local. El despliegue usa `docker compose -f compose.yaml`, con PostgreSQL en su red interna.
+Para consultar PostgreSQL con DBeaver, `compose.yaml` publica `127.0.0.1:15432 → db:5432` y conecta `db` a una red bridge adicional para ese acceso. DBeaver se conecta desde el mismo equipo donde se ejecuta Docker, con host `127.0.0.1`, puerto `15432` y las credenciales de la base. Si se usa este Compose en Linux, el puerto queda limitado al loopback de ese servidor. Django sigue usando `db:5432` por la red backend interna.
 
 Los servicios `db`, `api` y `web` usan `restart: unless-stopped`. Docker vuelve a iniciar un contenedor si su proceso principal termina y respeta las detenciones manuales. Un estado `unhealthy` por sí solo se refleja en el healthcheck y no activa esta política.
 
@@ -132,7 +132,7 @@ Trabajo realizado en la rama personal `feature/08-melvin-infraestructura`. La di
 
 | Ruta | Método | Comportamiento |
 |---|---|---|
-| `/` | GET, POST | Portada de acceso con inicio de sesión activo y pestaña de registro. Si hay una sesión iniciada, abre el perfil. |
+| `/` | GET | Inicio público de Milton. **Jugar** enlaza al login para visitantes y a la sección de juego para usuarios autenticados mientras se integra la selección de dificultad. |
 | `/cuentas/registro/` | GET, POST | Valida usuario único, formato de correo y contraseña con los validadores de Django. Crea el usuario y su perfil en una transacción e inicia sesión. |
 | `/cuentas/login/` | GET, POST | Autentica con usuario y contraseña. Después de iniciar sesión vuelve a la ruta local solicitada o abre el perfil. |
 | `/cuentas/logout/` | POST | Cierra la sesión con protección CSRF y redirige a la pantalla de acceso. |
@@ -146,7 +146,7 @@ En un proyecto Compose aislado pasaron las 14 pruebas de Django con PostgreSQL 1
 
 Las pantallas de acceso y perfil siguen las maquetas `02_acceso_usuarios.png` y `06_perfil.png`. Acceso y registro comparten cabecera, panel y pestañas. El perfil incorpora navegación por secciones, avatar, fecha de registro y controles de audio deslizantes con indicador de porcentaje. Los estilos y el script de volumen pertenecen a `api/cuentas/static/cuentas/`.
 
-La revisión de la portada usa `01_inicio.png` como referencia para `/` y `/cuentas/login/`. Integra el formulario Django en el panel de bienvenida y conserva la ilustración, los niveles, las características y el pie. El formulario admite nombre de usuario o correo asociado a una sola cuenta y permite alternar la visibilidad de la contraseña. En Chrome se comparó la vista de 1648 × 928 con la referencia y se verificó el ancho del documento a 390 y 360 px. Pasaron 16 pruebas de Django.
+La pantalla de acceso en `/cuentas/login/` usa `01_inicio.png` como referencia. Integra el formulario Django en el panel de bienvenida y conserva la ilustración, los niveles, las características y el pie. El formulario admite nombre de usuario o correo asociado a una sola cuenta y permite alternar la visibilidad de la contraseña. En Chrome se comparó la vista de 1648 × 928 con la referencia y se verificó el ancho del documento a 390 y 360 px. Pasaron 16 pruebas de Django.
 
 La portada de acceso y el registro comparten `api/cuentas/templates/cuentas/portada_acceso.html` y `portada.css`. Cada ruta renderiza sus campos Django y sus acciones. Se verificaron ambas pantallas a 1648, 390 y 360 px, incluido el control de visibilidad de cada contraseña.
 
@@ -177,3 +177,13 @@ En teléfonos, la marca aparece una sola vez. La escena animada se centra encima
 El perfil móvil usa una cabecera compacta, muestra la identidad antes de los accesos de sección y da más espacio táctil al alias, a los controles de audio y a **Guardar perfil**. En escritorio se conserva la navegación lateral.
 
 Para el siguiente colaborador, Kenaliz puede leer las preferencias persistidas desde `request.user.perfil_jugador` una vez inicializado el perfil. Dimas puede conectar las estadísticas reales en `api/cuentas/templates/cuentas/perfil.html` cuando estén disponibles los modelos de partidas. La integración de las rutas privadas del juego y las respuestas 404 para partidas ajenas corresponde al motor. Cada colaborador debe registrar su verificación y dejar instrucciones para el siguiente relevo.
+
+## Integración del motor y las pantallas
+
+Se incorporó el PR #2 del motor y se conservaron las pantallas locales de inicio y resultado. **Jugar ahora** abre el tablero con la dificultad seleccionada. Si falta sesión, Django pasa por acceso y conserva el destino al iniciar sesión o registrar una cuenta. El tablero prepara la cuadrícula del nivel y el primer movimiento inicia la partida persistida.
+
+Una acción, una consulta de tiempo o un abandono que devuelve un estado final incluye la URL de `/partidas/<uuid>/resultado/`. El resultado consulta la partida del usuario autenticado y toma el puntaje, duración, movimientos, banderas y tablero de PostgreSQL. La comparativa usa victorias previas del mismo jugador y nivel. Una partida ajena o en curso devuelve 404 en esta pantalla. `/inicio-juego/resultado-demo/` sigue disponible como demostración identificada.
+
+Pasaron 42 pruebas de Django. En un Compose aislado se verificó en Chrome el recorrido desde Inicio, pasando por el acceso y el registro, hasta un tablero Normal de 100 casillas. Una jugada y el abandono llevaron al resultado de esa partida guardada. La pantalla de resultado se comprobó a 1600 y 390 px de ancho.
+
+El historial y la clasificación quedan pendientes de sus módulos. El motor integrado crea partidas nuevas y todavía requiere una revisión separada de concurrencia para garantizar una única partida activa por usuario al abrir varias pestañas.

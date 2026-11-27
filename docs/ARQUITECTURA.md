@@ -4,7 +4,7 @@
 
 El entorno local conecta el navegador en `127.0.0.1:8080` con Caddy (`web:8000`). Caddy reenvía las peticiones dinámicas a Gunicorn y Django en `api:5000` por la red frontend. Django comprueba su salud en su propio `127.0.0.1:8000` y consulta PostgreSQL en `db:5432` por la red backend interna. El despliegue Linux prevé HTTPS mediante el proxy en 80/443.
 
-`web` es el único servicio que publica un puerto. Los secretos vienen de `.env` local y Compose usa el nombre `buscaminas_g3`. El [registro de implementación](../Implementacion_realizadas.md) describe los healthchecks y los volúmenes.
+`web` sirve la aplicación y `db` tiene un mapeo exclusivo de loopback en `127.0.0.1:15432` para DBeaver. Django accede a PostgreSQL por `backend`. Los secretos vienen de `.env` local y Compose usa el nombre `buscaminas_g3`. El [registro de implementación](../Implementacion_realizadas.md) describe los healthchecks y los volúmenes.
 
 ## Módulos y propiedad del código
 
