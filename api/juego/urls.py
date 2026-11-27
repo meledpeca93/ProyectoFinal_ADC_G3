@@ -9,6 +9,7 @@ from .views import (
     nueva_partida,
     estado_partida,
     accion_partida,
+    abandonar_partida,
 )
 
 urlpatterns = [
@@ -19,7 +20,7 @@ urlpatterns = [
         resultado_demo,
         name="resultado_demo"
     ),
-    
+
     path(
     "jugar/",
     pantalla_juego,
@@ -42,5 +43,11 @@ urlpatterns = [
         "api/partidas/<uuid:partida_id>/accion/",
         accion_partida,
         name="accion_partida"
+    ),
+
+        path(
+        "api/partidas/<uuid:partida_id>/abandonar/",
+        abandonar_partida,
+        name="abandonar_partida"
     ),
 ]

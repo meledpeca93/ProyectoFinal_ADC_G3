@@ -479,3 +479,26 @@ def accion_partida(request, partida_id):
     )
 
     return JsonResponse(respuesta)
+
+@login_required
+@require_POST
+@transaction.atomic
+def abandonar_partida(request, partida_id):
+
+    partida = get_object_or_404(
+        Partida.objects.select_for_update(),
+        id=partida_id,
+        usuario=request.user
+    )
+
+    if partida.estado == "EN_CURSO":
+
+        if segundos_restantes(partida) == 0:
+
+            finalizar_partida(partida, "TIEMPO_AGOTADO")
+
+        else:
+
+            finalizar_partida(partida, "ABANDONADA")
+
+    return JsonResponse(estado_publico(partida))
